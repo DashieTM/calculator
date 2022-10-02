@@ -93,8 +93,8 @@ bool calc::isOperator(char& op){
 }
 
 std::string calc::calculate(std::vector<std::string>& input) {
-    try{
         calc* calculator = new calc(input);
+    try{
         std::string result = std::to_string(calculator->handleExpression());
         result.erase ( result.find_last_not_of('0') + 1, std::string::npos );
         result.erase ( result.find_last_not_of('.') + 1, std::string::npos );
@@ -102,13 +102,15 @@ std::string calc::calculate(std::vector<std::string>& input) {
         return "Result: " + result;
 
     } catch(ErrorCode code){
+        std::string problem = calculator->current;
+        delete(calculator);
         switch(code){
             case DIVBYZERO:
                 return "Division and Modulo by 0 is not allowed!";
             case NOTANOPERATOR:
-                return "Expected an operator, but the symbol was not a operator!";
+                return "Expected an operator at " + problem;
             case NOTANUMBER:
-                return "Expected a number, but the symbol was not a number!";
+                return "Expected a number at " + problem;
             case BRACKEDERROR:
                 return "Open bracket not closed!";
         }
@@ -196,7 +198,7 @@ double calc::handleFactor(){
         }
         this->next();
     } else {
-        if(!std::isdigit(this->current.front()) && !calc::isOperator(this->current.front())){
+        if(!std::isdigit(this->current.front())){
             throw(NOTANUMBER);
         }
         result = std::stod(this->current);

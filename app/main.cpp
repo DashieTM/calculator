@@ -18,7 +18,8 @@ class MyWindow : public Gtk::Window {
   public:
   MyWindow();
   void on_button_clicked();
-  void on_exit_clicked();
+  void on_clear_clicked();
+  void on_delete_clicked();
   void on_1_clicked();
   void on_2_clicked();
   void on_3_clicked();
@@ -40,6 +41,7 @@ class MyWindow : public Gtk::Window {
   void on_enter_pressed();
   Gtk::Button m_button;
   Gtk::Button m2_button;
+  Gtk::Button m3_button;
   Gtk::Button c1_button;
   Gtk::Button c2_button;
   Gtk::Button c3_button;
@@ -75,6 +77,7 @@ class MyWindow : public Gtk::Window {
 MyWindow::MyWindow():
   m_button("="),
   m2_button("clear"),
+  m3_button("delete"),
   c1_button("1"),
   c2_button("2"),
   c3_button("3"),
@@ -111,7 +114,9 @@ MyWindow::MyWindow():
   m_button.signal_clicked().connect(sigc::mem_fun(*this,
               &MyWindow::on_button_clicked));
   m2_button.signal_clicked().connect(sigc::mem_fun(*this,
-              &MyWindow::on_exit_clicked));
+              &MyWindow::on_clear_clicked));
+  m3_button.signal_clicked().connect(sigc::mem_fun(*this,
+              &MyWindow::on_delete_clicked));
   c1_button.signal_clicked().connect(sigc::mem_fun(*this,
               &MyWindow::on_1_clicked));
   c2_button.signal_clicked().connect(sigc::mem_fun(*this,
@@ -185,6 +190,7 @@ MyWindow::MyWindow():
   mainRow.set_spacing(5);
   mainRow.append(m_button);
   mainRow.append(m2_button);
+  mainRow.append(m3_button);
 
   numberRow1.append(c1_button);
   numberRow1.append(c2_button);
@@ -245,12 +251,24 @@ void MyWindow::on_button_clicked() {
     this->result_shown = true;
 }
 
-void MyWindow::on_exit_clicked() {
+void MyWindow::on_clear_clicked() {
   this->result.clear();
   this->result_shown = false;
   this->entryBox.set_text("");
   this->entryBox.set_placeholder_text("Enter an expression.");
 }
+
+void MyWindow::on_delete_clicked() {
+  if(this->result_shown){
+    this->result_shown = false; 
+    this->result.clear();
+    this->entryBox.set_placeholder_text("Enter an expression.");  
+    return;
+  } else if(this->result == "")return;
+  this->result.pop_back();
+  this->entryBox.set_text(this->result);
+}
+
 void MyWindow::on_enter_pressed() {
   this->result = this->entryBox.get_text();
     this->result = calc::gui(this->result);
