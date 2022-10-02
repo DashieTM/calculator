@@ -141,7 +141,7 @@ void calc::next(){
 double calc::handleExpression(){
     double result = this->handleTerm();
     if(!std::isdigit(this->current.front())){
-        while(this->current != ""){
+        while(this->current != "" && this->current != ")"){
             switch(this->current.front()){
                 case '+':
                     this->next();
