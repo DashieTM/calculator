@@ -16,17 +16,24 @@ void calc::interface() {
     std::getline(std::cin, line);
     if(line == "exit"){
         return;
-    }
+    } 
+    if(line != "") {
     std::vector<std::string> input = calc::splitString(line);
-    if(input.front() == "add") {
-        input.erase(input.begin());
-        if(input.size() > 1) {
-            calc::write_var(input.at(0),input.at(1));
-        } else {
-            std::cout << "Please enter a variable and a number to assign.\n";
-        }
-    } else {
-        std::cout << this->calculate(input) << "\n";
+      if(input.front() == "add") {
+          input.erase(input.begin());
+          if(input.size() > 1) {
+              calc::write_var(input.at(0),input.at(1));
+          } else {
+              std::cout << "Please enter a variable and a number to assign.\n";
+          }
+      } else if(input.front() == "del") {
+          input.erase(input.begin());
+          if(input.size() > 0) {
+              this->delete_vars(input.at(0));
+          }
+      }else {
+          std::cout << this->calculate(input) << "\n";
+      }
     }
     interface();
 }
@@ -45,16 +52,40 @@ std::string calc::testinterface(std::string str) {
 void calc::write_var(std::string& key, std::string& value) {
   std::ofstream vars;
   vars.open(this->vardir, std::ios_base::app);
-  if (vars.is_open())
-  {
+  if (vars.is_open()) {
     vars << key << std::endl;
     vars << value << std::endl;
     std::cout << "added " << key << " to variables with value " << value << std::endl;
   }
   else std::cout << "Unable to open file";
+  this->read_vars();
+}
+
+void calc::delete_vars(std::string& delkey) {
+  std::map<std::string , std::string>::iterator it;
+  if(this->vars.find(delkey) != this->vars.end()) {
+      this->vars.erase(delkey);
+  } else {
+      std::cout << "The variable " << delkey << " was not found in the list!\n";
+      return;
+  }
+  
+  std::ofstream vars (this->vardir);
+  if (vars.is_open()) {
+    for(auto e : this->vars) {
+    vars << e.first << std::endl;
+    vars << e.second << std::endl;
+    }
+  }
+  else {
+      std::cout << "Unable to open file";
+      return;
+  }
+  std::cout << "deleted the variable " << delkey << std::endl;
 }
 
 void calc::read_vars() {
+  this->vars.clear();
   std::string key;
   std::string value;
   std::ifstream vars (this->vardir);
@@ -65,7 +96,10 @@ void calc::read_vars() {
     }
     vars.close();
   }
-  else std::cout << "Unable to open file"; 
+  else std::cout << "Unable to open file";
+}
+
+void calc::push_vars() {
   std::map<std::string , std::string>::iterator it;
   for(auto &e : this->tokens) {
       it = this->vars.find(e);
@@ -139,7 +173,7 @@ bool calc::isOperator(char& op){
 std::string calc::calculate(std::vector<std::string>& input) {
         this->tokens = input;
     try{
-        this->read_vars();
+        this->push_vars();
         this->next();
         std::string result = std::to_string(this->handleExpression());
         result.erase ( result.find_last_not_of('0') + 1, std::string::npos );

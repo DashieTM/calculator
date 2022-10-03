@@ -108,6 +108,7 @@ MyWindow::MyWindow():
   entryBox()
   {
   calculator = new calc();
+  calculator->read_vars();
   set_title("Calculator");
   set_default_size(300, 300);
   m_button.signal_clicked().connect(sigc::mem_fun(*this,
@@ -236,20 +237,28 @@ int main(int argc, char* argv[]) {
     }
   } else {
     calc* calculator = new calc();
+    calculator->read_vars();
     calc::greeting();
     calculator->interface();
     delete(calculator);
   }
 }
 void MyWindow::on_button_clicked() {
+    if(this->result != "") {
     this->result = this->calculator->gui(this->result);
+    } else {
+      this->entryBox.set_placeholder_text("Enter an expression.");
+      this->result_shown = false;
+      return;
+    }
     this->entryBox.set_text("");
     if(this->result == ""){
       this->entryBox.set_placeholder_text("Enter an expression.");  
     } else {
       this->entryBox.set_placeholder_text(this->result);
-    }
+      this->result="";
     this->result_shown = true;
+    }
 }
 
 void MyWindow::on_clear_clicked() {
@@ -271,15 +280,17 @@ void MyWindow::on_delete_clicked() {
 }
 
 void MyWindow::on_enter_pressed() {
-  this->result = this->entryBox.get_text();
-    this->result = this->calculator->gui(this->result);
+    this->result = this->entryBox.get_text();
+    if(this->result != ""){
+      this->result = this->calculator->gui(this->result);
+    }
     this->entryBox.set_text("");
     if(this->result == ""){
       this->entryBox.set_placeholder_text("Enter an expression.");  
     } else {
       this->entryBox.set_placeholder_text(this->result);
-    }
     this->result_shown = true;
+    }
 }
 void MyWindow::on_1_clicked() {
   if(this->result_shown){
