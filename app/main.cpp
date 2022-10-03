@@ -1,8 +1,6 @@
 // File: main.cc
 #include "calc.hpp"
 #include <gtkmm.h>
-#include <iostream>
-#include <string>
 class MyWindow : public Gtk::Window {
   
   protected:

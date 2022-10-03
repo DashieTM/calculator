@@ -1,6 +1,4 @@
 #include "calc.hpp"
-#include <cctype>
-#include <string>
 /*
  * standard grammar for calculator
  * exp := term | exp + term | exp - term
@@ -32,6 +30,39 @@ std::string calc::gui(std::string& str) {
 std::string calc::testinterface(std::string str) {
     std::vector<std::string> input = calc::splitString(str);
     return calc::calculate(input);
+}
+
+void calc::write_var(std::string& key, std::string& value) {
+  std::ofstream vars ("vars.txt");
+  if (vars.is_open())
+  {
+    vars << key << std::endl;
+    vars << value << std::endl;
+  }
+  else std::cout << "Unable to open file";
+}
+
+void calc::read_vars() {
+  std::string key;
+  std::string value;
+  std::ifstream vars ("vars.txt");
+  if (vars.is_open()) {
+    while(getline(vars,key)) {
+    getline(vars,value);
+    this->vars.insert(std::pair<std::string,std::string>(key,value));
+    }
+    vars.close();
+  }
+  else std::cout << "Unable to open file"; 
+  std::map<std::string , std::string>::iterator it;
+  for(auto &e : this->tokens) {
+    std::cout << e << std::endl;
+      it = this->vars.find(e);
+      if(it != this->vars.end()) {
+          e = it->second;
+      }
+  }
+
 }
 
 std::vector<std::string> calc::splitString(std::string &input) {
@@ -97,6 +128,8 @@ bool calc::isOperator(char& op){
 std::string calc::calculate(std::vector<std::string>& input) {
         calc* calculator = new calc(input);
     try{
+        calculator->read_vars();
+        calculator->next();
         std::string result = std::to_string(calculator->handleExpression());
         result.erase ( result.find_last_not_of('0') + 1, std::string::npos );
         result.erase ( result.find_last_not_of('.') + 1, std::string::npos );
@@ -123,7 +156,6 @@ std::string calc::calculate(std::vector<std::string>& input) {
 
 calc::calc(std::vector<std::string>& input){
     this->tokens = input;
-    this->next();
 }
 
 bool calc::hasNext(){
