@@ -185,7 +185,7 @@ double calc::handleTerm(){
             break;
         case '%':
             this->next();
-            div =  this->handleTerm();
+            div =  this->handleFactor();
             if(div == 0)throw(DIVBYZERO);
             result = (double)((int)result % (int)div);
             if(isOperator(this->current.front())){
