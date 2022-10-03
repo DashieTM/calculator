@@ -39,13 +39,15 @@ std::vector<std::string> calc::splitString(std::string &input) {
     std::vector<std::string> tokens;
     bool digitLock = false;
     bool charLock = false;
+    bool dotLock = false;
     for(auto &e : input){
-        if(std::isdigit(e) || e == '.'){
+        if(std::isdigit(e) ||( e == '.' && !dotLock)){
             if(charLock) {
                 charLock = false;
                 tokens.push_back(buffer);
                 buffer.clear();
             }
+            if(e == '.') dotLock = true;
             digitLock = true;
             buffer += e;
             continue;

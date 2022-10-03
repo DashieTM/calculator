@@ -2,4 +2,7 @@ CMakeCache.txt
 build/*
 winbuild/*
 CMakeFiles/*
+*.zst
+src/*
+pkg/*
 
