@@ -13,6 +13,8 @@ class calc{
       std::map<std::string , std::string> vars;
       std::string current;
       bool openBracket;
+      const std::string homedir = getenv("HOME");
+      const std::string vardir = homedir + "/.local/share/calc/vars.txt";
 
       enum ErrorCode{
         DIVBYZERO, NOTANOPERATOR, NOTANUMBER, BRACKEDERROR

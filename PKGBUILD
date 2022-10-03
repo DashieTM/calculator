@@ -19,5 +19,9 @@ check() {
 
 package() {
     cd ../
+    if [ ! -d "$HOME/.local/share/calc" ]; then
+    mkdir $HOME/.local/share/calc
+    touch $HOME/.local/share/calc/vars.txt
+    fi
     install -Dm755 build/Calculator "$pkgdir"/usr/bin/calculator
 }

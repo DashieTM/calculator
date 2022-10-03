@@ -33,7 +33,7 @@ std::string calc::testinterface(std::string str) {
 }
 
 void calc::write_var(std::string& key, std::string& value) {
-  std::ofstream vars ("vars.txt");
+  std::ofstream vars (this->vardir);
   if (vars.is_open())
   {
     vars << key << std::endl;
@@ -45,7 +45,7 @@ void calc::write_var(std::string& key, std::string& value) {
 void calc::read_vars() {
   std::string key;
   std::string value;
-  std::ifstream vars ("vars.txt");
+  std::ifstream vars (this->vardir);
   if (vars.is_open()) {
     while(getline(vars,key)) {
     getline(vars,value);
@@ -56,7 +56,6 @@ void calc::read_vars() {
   else std::cout << "Unable to open file"; 
   std::map<std::string , std::string>::iterator it;
   for(auto &e : this->tokens) {
-    std::cout << e << std::endl;
       it = this->vars.find(e);
       if(it != this->vars.end()) {
           e = it->second;
