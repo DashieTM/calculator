@@ -174,15 +174,25 @@ double calc::handleTerm(){
             break;
         case '/':
             this->next();
-            div =  this->handleTerm();
+            div =  this->handleFactor();
             if(div == 0)throw(DIVBYZERO);
             result /= div;
+            if(isOperator(this->current.front())){
+              this->tokens.insert(tokens.begin() , this->current);
+              this->current = std::to_string(result);
+              result = this->handleTerm();
+            }
             break;
         case '%':
             this->next();
             div =  this->handleTerm();
             if(div == 0)throw(DIVBYZERO);
             result = (double)((int)result % (int)div);
+            if(isOperator(this->current.front())){
+              this->tokens.insert(tokens.begin() , this->current);
+              this->current = std::to_string(result);
+              result = this->handleTerm();
+            }
             break;
         default:
             break;
