@@ -23,7 +23,7 @@ class calc{
 
 
   public:
-      calc(std::vector<std::string>& input);
+      calc();
       void next();
       bool hasNext();
       double handleExpression();
@@ -31,13 +31,13 @@ class calc{
       double handleFactor();
       void write_var(std::string &key, std::string &value);
       void read_vars();
+      std::string calculate(std::vector<std::string>& input);
+      std::string gui(std::string& str);
+      void interface();
       
-      static std::string calculate(std::vector<std::string>& input);
       static void greeting();
-      static std::string gui(std::string& str);
       static std::string testinterface(std::string str);
       static bool isOperator(char& op);
-      static void interface();
       static std::vector<std::string> splitString(std::string& input);
 
 };

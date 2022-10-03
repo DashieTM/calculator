@@ -6,7 +6,7 @@ class MyWindow : public Gtk::Window {
   protected:
     std::string result;
     bool result_shown;
-  
+    calc* calculator; 
   
   private:
 
@@ -107,6 +107,7 @@ MyWindow::MyWindow():
   operatorBox(),
   entryBox()
   {
+  calculator = new calc();
   set_title("Calculator");
   set_default_size(300, 300);
   m_button.signal_clicked().connect(sigc::mem_fun(*this,
@@ -234,12 +235,14 @@ int main(int argc, char* argv[]) {
       std::cout << "To run the program in gui launch it with the --gui flag\n Otherwise leave it empty for command line\n";
     }
   } else {
+    calc* calculator = new calc();
     calc::greeting();
-    calc::interface();
+    calculator->interface();
+    delete(calculator);
   }
 }
 void MyWindow::on_button_clicked() {
-    this->result = calc::gui(this->result);
+    this->result = this->calculator->gui(this->result);
     this->entryBox.set_text("");
     if(this->result == ""){
       this->entryBox.set_placeholder_text("Enter an expression.");  
@@ -269,7 +272,7 @@ void MyWindow::on_delete_clicked() {
 
 void MyWindow::on_enter_pressed() {
   this->result = this->entryBox.get_text();
-    this->result = calc::gui(this->result);
+    this->result = this->calculator->gui(this->result);
     this->entryBox.set_text("");
     if(this->result == ""){
       this->entryBox.set_placeholder_text("Enter an expression.");  

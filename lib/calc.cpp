@@ -18,26 +18,38 @@ void calc::interface() {
         return;
     }
     std::vector<std::string> input = calc::splitString(line);
-    std::cout << calc::calculate(input) << "\n";
+    if(input.front() == "add") {
+        input.erase(input.begin());
+        if(input.size() > 1) {
+            calc::write_var(input.at(0),input.at(1));
+        } else {
+            std::cout << "Please enter a variable and a number to assign.\n";
+        }
+    } else {
+        std::cout << this->calculate(input) << "\n";
+    }
     interface();
 }
 
 std::string calc::gui(std::string& str) {
     std::vector<std::string> input = calc::splitString(str);
-    return calc::calculate(input);
+    return this->calculate(input);
 }
 
 std::string calc::testinterface(std::string str) {
+    calc* calculator = new calc();
     std::vector<std::string> input = calc::splitString(str);
-    return calc::calculate(input);
+    return calculator->calculate(input);
 }
 
 void calc::write_var(std::string& key, std::string& value) {
-  std::ofstream vars (this->vardir);
+  std::ofstream vars;
+  vars.open(this->vardir, std::ios_base::app);
   if (vars.is_open())
   {
     vars << key << std::endl;
     vars << value << std::endl;
+    std::cout << "added " << key << " to variables with value " << value << std::endl;
   }
   else std::cout << "Unable to open file";
 }
@@ -125,26 +137,23 @@ bool calc::isOperator(char& op){
 }
 
 std::string calc::calculate(std::vector<std::string>& input) {
-        calc* calculator = new calc(input);
+        this->tokens = input;
     try{
-        calculator->read_vars();
-        calculator->next();
-        std::string result = std::to_string(calculator->handleExpression());
+        this->read_vars();
+        this->next();
+        std::string result = std::to_string(this->handleExpression());
         result.erase ( result.find_last_not_of('0') + 1, std::string::npos );
         result.erase ( result.find_last_not_of('.') + 1, std::string::npos );
-        delete(calculator);
         return "Result: " + result;
 
     } catch(ErrorCode code){
-        std::string problem = calculator->current;
-        delete(calculator);
         switch(code){
             case DIVBYZERO:
                 return "Division and Modulo by 0 is not allowed!";
             case NOTANOPERATOR:
-                return "Expected an operator at " + problem;
+                return "Expected an operator at " + this->current;
             case NOTANUMBER:
-                return "Expected a number at " + problem;
+                return "Expected a number at " + this->current;
             case BRACKEDERROR:
                 return "Open bracket not closed!";
         }
@@ -153,9 +162,7 @@ std::string calc::calculate(std::vector<std::string>& input) {
   return "Something went wrong...";
 }
 
-calc::calc(std::vector<std::string>& input){
-    this->tokens = input;
-}
+calc::calc(){}
 
 bool calc::hasNext(){
     if(!this->tokens.empty()){
