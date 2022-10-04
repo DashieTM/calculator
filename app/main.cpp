@@ -197,7 +197,7 @@ void MyWindow::on_button_clicked() {
     if(this->result == ""){
       this->entryBox.set_placeholder_text("Enter an expression.");  
     } else {
-      this->entryBox.set_placeholder_text(this->result);
+      this->entryBox.set_placeholder_text("Result: " + this->result);
       this->result="";
     this->result_shown = true;
     }
@@ -230,7 +230,7 @@ void MyWindow::on_enter_pressed() {
     if(this->result == ""){
       this->entryBox.set_placeholder_text("Enter an expression.");  
     } else {
-      this->entryBox.set_placeholder_text(this->result);
+      this->entryBox.set_placeholder_text("Result: " + this->result);
     this->result_shown = true;
     }
 }

@@ -35,9 +35,10 @@ void calc::interface(bool fancy) {
       }else {
         if(fancy){
           std::string result = this->calculate(input);
+          std::cout << "Result:\n";
           printDigit(result,std::cout); 
         } else {
-          std::cout << this->calculate(input) << "\n";
+          std::cout << "Result: " << this->calculate(input) << "\n";
         }
       }
     }
@@ -184,7 +185,7 @@ std::string calc::calculate(std::vector<std::string>& input) {
         std::string result = std::to_string(this->handleExpression());
         result.erase ( result.find_last_not_of('0') + 1, std::string::npos );
         result.erase ( result.find_last_not_of('.') + 1, std::string::npos );
-        return "Result: " + result;
+        return result;
 
     } catch(ErrorCode code){
         switch(code){
