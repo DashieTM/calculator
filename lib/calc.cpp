@@ -1,4 +1,5 @@
 #include "calc.hpp"
+#include "digit.hpp"
 /*
  * standard grammar for calculator
  * exp := term | exp + term | exp - term
@@ -10,7 +11,7 @@ void calc::greeting() {
     std::cout << "A small calulator, various expressions allowed, operators + - / * %.\n Or enter exit to exit\n";
 }
 
-void calc::interface() {
+void calc::interface(bool fancy) {
     std::cout << "Enter an expression:\n";
     std::string line;
     std::getline(std::cin, line);
@@ -32,10 +33,15 @@ void calc::interface() {
               this->delete_vars(input.at(0));
           }
       }else {
+        if(fancy){
+          std::string result = this->calculate(input);
+          printDigit(result,std::cout); 
+        } else {
           std::cout << this->calculate(input) << "\n";
+        }
       }
     }
-    interface();
+    interface(fancy);
 }
 
 std::string calc::gui(std::string& str) {

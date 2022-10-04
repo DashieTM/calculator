@@ -168,6 +168,12 @@ int main(int argc, char* argv[]) {
       auto app = Gtk::Application::create("org.shitgaem.Calculator");
       argc = 1;
       return app->make_window_and_run<MyWindow>(argc, argv);
+    } else if(test == "--fancy") {
+    calc* calculator = new calc();
+    calculator->read_vars();
+    calc::greeting();
+    calculator->interface(true);
+    delete(calculator);
     } else {
       std::cout << "To run the program in gui launch it with the --gui flag\n Otherwise leave it empty for command line\n";
     }
@@ -175,7 +181,7 @@ int main(int argc, char* argv[]) {
     calc* calculator = new calc();
     calculator->read_vars();
     calc::greeting();
-    calculator->interface();
+    calculator->interface(false);
     delete(calculator);
   }
 }

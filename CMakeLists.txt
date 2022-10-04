@@ -12,11 +12,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_library("CalcLib" STATIC
   "lib/calc.cpp"
+  "lib/digit.cpp"
 )
 
 target_include_directories("CalcLib" PUBLIC
     "lib"
 )
+
 
 # Specify library "CuteFramework"
 # It is a header-only library, featuring no object files

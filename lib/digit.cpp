@@ -1,10 +1,6 @@
 #include "digit.hpp"
 #include <iostream>
-int main() {
-  std::string num;
-  std::cin >> num;
-  printDigit(num, std::cout);
-}
+#include <string>
 
 void printDigit(std::string& str, std::ostream& stream) {
   std::string* arr = new std::string[5];
@@ -13,16 +9,40 @@ void printDigit(std::string& str, std::ostream& stream) {
     if(std::isdigit(e)) {
       i = std::atoi(&e);
       writeChar(arr, i); 
+    } else {
+      writeChar(arr,e);
     }
   }
-  stream << arr[0] << "\n" << arr[1] << "\n" << arr[2] << "\n" << arr[3] << "\n" << arr[4] << "\n";
+  for(int i=0; i < 5 ; i++) {
+    if(arr[i] != "") {
+      stream << arr[i] << "\n";
+    }
+  }
 }
 
 void printDigit(int i, std::ostream& stream) {
-  std::string* arr = new std::string[5];
-  writeChar(arr, i);
-  stream << arr[0] << "\n" << arr[1] << "\n" << arr[2] << "\n" << arr[3] << "\n" << arr[4] << "\n";
-delete[](arr);
+  std::string str = std::to_string(i);
+  printDigit(str, stream);  
+}
+
+void writeChar(std::string* arr, char i){
+  switch(i) {
+    case '.':
+      arr[0] += "    ";
+      arr[1] += "    ";
+      arr[2] += "    ";
+      arr[3] += "    ";
+      arr[4] += " .  ";
+      return;
+    case '-':
+      arr[0] += "    ";
+      arr[1] += "    ";
+      arr[2] += " -  ";
+      arr[3] += "    ";
+      arr[4] += "    ";
+      return;
+    default: arr[0] += i;
+  }
 }
 
 void writeChar(std::string* arr,int i) {

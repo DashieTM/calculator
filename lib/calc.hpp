@@ -35,7 +35,7 @@ class calc{
       void delete_vars(std::string& delkey);
       std::string calculate(std::vector<std::string>& input);
       std::string gui(std::string& str);
-      void interface();
+      void interface(bool fancy);
       
       static void greeting();
       static std::string testinterface(std::string str);
