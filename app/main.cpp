@@ -1,4 +1,5 @@
 #include "main.hpp"
+
 MyWindow::MyWindow():
   m_button("="),
   m2_button("clear"),
@@ -23,7 +24,9 @@ MyWindow::MyWindow():
   dot_button("."),
   menu_button(),
   box(Gtk::Orientation::VERTICAL),
-  menuBox(),
+  menuBox(Gtk::Orientation::VERTICAL),
+  varList(),
+  varEntry(),
   menu(),
   comboBox(),
   mainRow(),
@@ -87,6 +90,8 @@ MyWindow::MyWindow():
               &MyWindow::on_menu_clicked));
   entryBox.signal_activate().connect( sigc::mem_fun(*this, 
               &MyWindow::on_enter_pressed) );
+  varEntry.signal_activate().connect( sigc::mem_fun(*this, 
+              &MyWindow::on_varenter_pressed) );
 
   // This packs the button into the Window (a container).
   //(m_button);
@@ -157,6 +162,10 @@ MyWindow::MyWindow():
   operatorRow2.append(obo_button);
   operatorRow2.append(obc_button);
   operatorRow2.set_spacing(5);
+
+  menu.set_child(menuBox);
+  menuBox.append(varEntry);
+  menuBox.append(varList);
   // The final step is to display this newly created widget...
   //set_child(box);
 }
@@ -186,21 +195,21 @@ int main(int argc, char* argv[]) {
   }
 }
 void MyWindow::on_button_clicked() {
-    if(this->result != "") {
-    this->result = this->calculator->gui(this->result);
-    } else {
-      this->entryBox.set_placeholder_text("Enter an expression.");
-      this->result_shown = false;
-      return;
-    }
-    this->entryBox.set_text("");
-    if(this->result == ""){
-      this->entryBox.set_placeholder_text("Enter an expression.");  
-    } else {
-      this->entryBox.set_placeholder_text("Result: " + this->result);
-      this->result="";
+  if(this->result != "") {
+    this->result = this->calculator->gui(this->result,false);
+  } else {
+    this->entryBox.set_placeholder_text("Enter an expression.");
+    this->result_shown = false;
+    return;
+  }
+  this->entryBox.set_text("");
+  if(this->result == ""){
+    this->entryBox.set_placeholder_text("Enter an expression.");  
+  } else {
+    this->entryBox.set_placeholder_text("Result: " + this->result);
+    this->result="";
     this->result_shown = true;
-    }
+  }
 }
 
 void MyWindow::on_clear_clicked() {
@@ -222,159 +231,106 @@ void MyWindow::on_delete_clicked() {
 }
 
 void MyWindow::on_enter_pressed() {
-    this->result = this->entryBox.get_text();
-    if(this->result != ""){
-      this->result = this->calculator->gui(this->result);
-    }
-    this->entryBox.set_text("");
-    if(this->result == ""){
-      this->entryBox.set_placeholder_text("Enter an expression.");  
-    } else {
-      this->entryBox.set_placeholder_text("Result: " + this->result);
+  this->result = this->entryBox.get_text();
+  if(this->result != ""){
+    this->result = this->calculator->gui(this->result,false);
+  }
+  this->entryBox.set_text("");
+  if(this->result == ""){
+    this->entryBox.set_placeholder_text("Enter an expression.");  
+  } else {
+    this->entryBox.set_placeholder_text("Result: " + this->result);
     this->result_shown = true;
-    }
+    this->result = "";
+  }
 }
 void MyWindow::on_1_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "1";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_2_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "2";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_3_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "3";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_4_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "4";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_5_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "5";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_6_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "6";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_7_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "7";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_8_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "8";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_9_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "9";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_0_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "0";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_plus_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "+";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_minus_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "-";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_div_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "/";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_mult_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "*";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_mod_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "%";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_bropen_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += "(";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_brclosed_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += ")";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_dot_clicked() {
-  if(this->result_shown){
-    this->result_shown = false; 
-    this->result.clear();
-  }
+  this->result = this->entryBox.get_text();
   this->result += ".";
   this->entryBox.set_text(this->result);
 }
@@ -385,4 +341,31 @@ void MyWindow::on_menu_clicked() {
   } else {
     this->menu_button.popup();
   }
+}
+
+void MyWindow::on_varenter_pressed() {
+ std::string varcommand;
+ varcommand = this->varEntry.get_text();
+ if(varcommand != ""){
+   varcommand = this->calculator->gui(varcommand,true);
+ }
+ this->varEntry.set_text("");
+ if(varcommand == ""){
+   this->varEntry.set_placeholder_text("enter variable command");  
+ } else {
+   this->varEntry.set_placeholder_text(varcommand);
+ }
+ varcommand = "";
+}
+
+void setup_listitem_cb(const Glib::RefPtr<Gtk::ListItem>& list_item) {
+auto text = Gtk::make_managed<Gtk::Text>();
+list_item->set_child(* text);
+}
+
+void bind_listitem_cb(const Glib::RefPtr<Gtk::ListItem>& list_item) {
+auto item = list_item->get_item();
+if (auto app_info = std::dynamic_pointer_cast<Gio::AppInfo>(item))
+if (auto text = dynamic_cast<Gtk::Text*>(list_item->get_child()))
+text->set_text("ping");
 }

@@ -29,13 +29,14 @@ class calc{
       double handleExpression();
       double handleTerm();
       double handleFactor();
-      void write_var(std::string &key, std::string &value);
       void read_vars();
       void push_vars();
-      void delete_vars(std::string& delkey);
-      std::string calculate(std::vector<std::string>& input);
-      std::string gui(std::string& str);
       void interface(bool fancy);
+      std::string calculate(std::vector<std::string>& input);
+      std::string gui(std::string& str, bool var_edit);
+      std::string handle_vars(std::vector<std::string>& str);
+      std::string write_var(std::string &key, std::string &value);
+      std::string delete_vars(std::string& delkey);
       
       static void greeting();
       static std::string testinterface(std::string str);

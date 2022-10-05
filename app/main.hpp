@@ -35,6 +35,7 @@ class MyWindow : public Gtk::Window {
   void on_dot_clicked();
   void on_menu_clicked();
   void on_enter_pressed();
+  void on_varenter_pressed();
   Gtk::Button m_button;
   Gtk::Button m2_button;
   Gtk::Button m3_button;
@@ -58,7 +59,9 @@ class MyWindow : public Gtk::Window {
   Gtk::Button dot_button;
   Gtk::MenuButton menu_button;
   Gtk::PopoverMenu menu;
+  Gtk::ListView varList;
   Gtk::Box menuBox;
+  Gtk::Entry varEntry;
   Gtk::Entry entryBox;
   Gtk::Box box;
   Gtk::Box comboBox;
@@ -71,4 +74,6 @@ class MyWindow : public Gtk::Window {
   Gtk::Box operatorRow1;
   Gtk::Box operatorRow2;
   Gtk::Box operatorBox;
+  void setup_listitem_cb(const Glib::RefPtr<Gtk::ListItem>& list_item);
+  void bind_listitem_cb(const Glib::RefPtr<Gtk::ListItem>& list_item);
 };
