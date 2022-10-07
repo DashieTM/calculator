@@ -37,6 +37,8 @@ class calc{
       std::string handle_vars(std::vector<std::string>& str);
       std::string write_var(std::string &key, std::string &value);
       std::string delete_vars(std::string& delkey);
+      std::vector<std::string> get_tokens();
+      std::map<std::string, std::string> get_vars();
       
       static void greeting();
       static std::string testinterface(std::string str);

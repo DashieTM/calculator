@@ -309,3 +309,11 @@ double calc::handleFactor(){
   }
   return result;
 }
+
+std::vector<std::string> calc::get_tokens() {
+  return this->tokens;
+}
+
+std::map<std::string, std::string> calc::get_vars() {
+  return this->vars;
+}

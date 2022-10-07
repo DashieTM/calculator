@@ -25,7 +25,6 @@ MyWindow::MyWindow():
   menu_button(),
   box(Gtk::Orientation::VERTICAL),
   menuBox(Gtk::Orientation::VERTICAL),
-  varList(),
   varEntry(),
   menu(),
   comboBox(),
@@ -86,7 +85,7 @@ MyWindow::MyWindow():
               &MyWindow::on_brclosed_clicked));
   dot_button.signal_clicked().connect(sigc::mem_fun(*this,
               &MyWindow::on_dot_clicked));
-  menu_button.signal_show().connect(sigc::mem_fun(*this,
+  menu.signal_show().connect(sigc::mem_fun(*this,
               &MyWindow::on_menu_clicked));
   entryBox.signal_activate().connect( sigc::mem_fun(*this, 
               &MyWindow::on_enter_pressed) );
@@ -165,7 +164,13 @@ MyWindow::MyWindow():
 
   menu.set_child(menuBox);
   menuBox.append(varEntry);
-  menuBox.append(varList);
+  menuBox.append(treeView);
+
+  treeModel = Gtk::ListStore::create(varList);
+  treeView.set_model(treeModel);
+
+  treeView.append_column("Variable Name", varList.key);
+  treeView.append_column("Variable Value", varList.value);
   // The final step is to display this newly created widget...
   //set_child(box);
 }
@@ -336,18 +341,15 @@ void MyWindow::on_dot_clicked() {
 }
 
 void MyWindow::on_menu_clicked() {
-  if(this->menu_shown) {
-    this->menu_button.popdown();
-  } else {
-    this->menu_button.popup();
-  }
+  this->get_list();
 }
 
 void MyWindow::on_varenter_pressed() {
  std::string varcommand;
  varcommand = this->varEntry.get_text();
  if(varcommand != ""){
-   varcommand = this->calculator->gui(varcommand,true);
+    varcommand = this->calculator->gui(varcommand,true);
+    this->get_list();
  }
  this->varEntry.set_text("");
  if(varcommand == ""){
@@ -358,14 +360,11 @@ void MyWindow::on_varenter_pressed() {
  varcommand = "";
 }
 
-void setup_listitem_cb(const Glib::RefPtr<Gtk::ListItem>& list_item) {
-auto text = Gtk::make_managed<Gtk::Text>();
-list_item->set_child(* text);
-}
-
-void bind_listitem_cb(const Glib::RefPtr<Gtk::ListItem>& list_item) {
-auto item = list_item->get_item();
-if (auto app_info = std::dynamic_pointer_cast<Gio::AppInfo>(item))
-if (auto text = dynamic_cast<Gtk::Text*>(list_item->get_child()))
-text->set_text("ping");
+void MyWindow::get_list() {
+  this->treeModel->clear();
+  for(auto e : this->calculator->get_vars()) {
+    auto row = *(this->treeModel->append());
+    row[varList.key] = e.first;
+    row[varList.value] = e.second;
+  }
 }

@@ -59,7 +59,6 @@ class MyWindow : public Gtk::Window {
   Gtk::Button dot_button;
   Gtk::MenuButton menu_button;
   Gtk::PopoverMenu menu;
-  Gtk::ListView varList;
   Gtk::Box menuBox;
   Gtk::Entry varEntry;
   Gtk::Entry entryBox;
@@ -74,6 +73,23 @@ class MyWindow : public Gtk::Window {
   Gtk::Box operatorRow1;
   Gtk::Box operatorRow2;
   Gtk::Box operatorBox;
-  void setup_listitem_cb(const Glib::RefPtr<Gtk::ListItem>& list_item);
-  void bind_listitem_cb(const Glib::RefPtr<Gtk::ListItem>& list_item);
+
+  class Columns : public Gtk::TreeModel::ColumnRecord {
+    public:
+      Columns() {
+        add(key);
+        add(value);
+      }
+
+      Gtk::TreeModelColumn<std::string> key;
+      Gtk::TreeModelColumn<std::string> value;
+  };
+
+  Columns varList;
+  Gtk::TreeView treeView;
+  Glib::RefPtr<Gtk::ListStore> treeModel;
+  void get_list();
+
+
+
 };
