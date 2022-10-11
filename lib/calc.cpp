@@ -330,7 +330,9 @@ std::map<std::string, std::string> Calculator::get_vars() {
 int testat_interface(std::string expr) {
   Calculator* calculator = new Calculator();
   std::vector<std::string> input = Calculator::splitString(expr);
-  return std::stoi(calculator->calculate(input));
+  int result = std::stoi(calculator->calculate(input));
+  delete calculator;
+  return result;
 }
 
 auto calc(int first, int second,char  op) -> int {

@@ -10,5 +10,5 @@ auto printLargeNumber(int i, std::ostream &out) -> void {
 }
 
 auto printLargeError(std::ostream &out) -> void {
- 
+  printErr(out); 
 }
