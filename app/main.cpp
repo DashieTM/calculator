@@ -39,7 +39,7 @@ MyWindow::MyWindow():
   operatorBox(),
   entryBox()
   {
-  calculator = new calc();
+  calculator = new Calculator();
   calculator->read_vars();
   set_title("Calculator");
   set_default_size(300, 300);
@@ -183,18 +183,20 @@ int main(int argc, char* argv[]) {
       argc = 1;
       return app->make_window_and_run<MyWindow>(argc, argv);
     } else if(test == "--fancy") {
-    calc* calculator = new calc();
+    Calculator* calculator = new Calculator();
     calculator->read_vars();
-    calc::greeting();
+    Calculator::greeting();
     calculator->interface(true);
     delete(calculator);
+    } else if(test == "--testat") {
+      pocketcalculator(std::cin, std::cout); 
     } else {
       std::cout << "To run the program in gui launch it with the --gui flag\n Otherwise leave it empty for command line\n";
     }
   } else {
-    calc* calculator = new calc();
+    Calculator* calculator = new Calculator();
     calculator->read_vars();
-    calc::greeting();
+    Calculator::greeting();
     calculator->interface(false);
     delete(calculator);
   }

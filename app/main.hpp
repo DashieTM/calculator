@@ -1,4 +1,5 @@
 #include "calc.hpp"
+#include "pocketcalculator.hpp"
 #include <gtkmm.h>
 class MyWindow : public Gtk::Window {
   
@@ -6,7 +7,7 @@ class MyWindow : public Gtk::Window {
     std::string result;
     bool result_shown;
     bool menu_shown;
-    calc* calculator;
+    Calculator* calculator;
   
   private:
   

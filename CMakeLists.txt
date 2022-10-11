@@ -7,12 +7,14 @@ project("Calculator"
 
 # Set c++ language standard to C++20
 set(CMAKE_CXX_STANDARD 20)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "") # works
 #[===[ LIBRARY ]===]
 
 add_library("CalcLib" STATIC
   "lib/calc.cpp"
   "lib/digit.cpp"
+  "lib/pocketcalculator.cpp"
+  "lib/sevensegment.cpp"
 )
 
 target_include_directories("CalcLib" PUBLIC

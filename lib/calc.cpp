@@ -7,11 +7,11 @@
  * factor := number | ( exp )
 */
 
-void calc::greeting() {
+void Calculator::greeting() {
   std::cout << "A small calulator, various expressions allowed, operators + - / * %.\n Or enter exit to exit\n";
 }
 
-std::string calc::handle_vars(std::vector<std::string>& input) {
+std::string Calculator::handle_vars(std::vector<std::string>& input) {
   if(input.front() == "add") {
     input.erase(input.begin());
     if(input.size() > 1) {
@@ -28,15 +28,19 @@ std::string calc::handle_vars(std::vector<std::string>& input) {
 return "";
 }
 
-void calc::interface(bool fancy) {
+void Calculator::interface(bool fancy) {
+  this->interface(fancy, std::cin);
+}
+
+void Calculator::interface(bool fancy, std::istream& is) {
   std::cout << "Enter an expression:\n";
   std::string line;
-  std::getline(std::cin, line);
+  std::getline(is, line);
   if(line != "") {
     if(line == "exit"){
       return;
     }
-    std::vector<std::string> input = calc::splitString(line);
+    std::vector<std::string> input = Calculator::splitString(line);
     std::string varreturn = this->handle_vars(input);
     if(varreturn != "") {
       std::cout << varreturn ;
@@ -50,15 +54,20 @@ void calc::interface(bool fancy) {
           std::cout << "Result: " << result << "\n";
         }
       } else {
-        std::cout << result << "\n";
+        if(fancy) {
+          printErr(std::cout);
+          std::cout << result << "\n";
+        } else {
+          std::cout << result << "\n";
+        }
       }
     }
   }
   interface(fancy);
 }
 
-std::string calc::gui(std::string& str, bool var_edit) {
-  std::vector<std::string> input = calc::splitString(str);
+std::string Calculator::gui(std::string& str, bool var_edit) {
+  std::vector<std::string> input = Calculator::splitString(str);
   if(var_edit) {
     return this->handle_vars(input);
   } else {
@@ -66,13 +75,13 @@ std::string calc::gui(std::string& str, bool var_edit) {
   }
 }
 
-std::string calc::testinterface(std::string str) {
-  calc* calculator = new calc();
-  std::vector<std::string> input = calc::splitString(str);
+std::string Calculator::testinterface(std::string str) {
+  Calculator* calculator = new Calculator();
+  std::vector<std::string> input = Calculator::splitString(str);
   return calculator->calculate(input);
 }
 
-std::string calc::write_var(std::string& key, std::string& value) {
+std::string Calculator::write_var(std::string& key, std::string& value) {
   std::ofstream vars;
   vars.open(this->vardir, std::ios_base::app);
   if (vars.is_open()) {
@@ -84,7 +93,7 @@ std::string calc::write_var(std::string& key, std::string& value) {
   else return "Unable to open file\n";
 }
 
-std::string calc::delete_vars(std::string& delkey) {
+std::string Calculator::delete_vars(std::string& delkey) {
   std::map<std::string , std::string>::iterator it;
   if(this->vars.find(delkey) != this->vars.end()) {
       this->vars.erase(delkey);
@@ -105,7 +114,7 @@ std::string calc::delete_vars(std::string& delkey) {
   return "deleted the variable " + delkey + "\n";
 }
 
-void calc::read_vars() {
+void Calculator::read_vars() {
   this->vars.clear();
   std::string key;
   std::string value;
@@ -120,7 +129,7 @@ void calc::read_vars() {
   else std::cout << "Unable to open file";
 }
 
-void calc::push_vars() {
+void Calculator::push_vars() {
   std::map<std::string , std::string>::iterator it;
   for(auto &e : this->tokens) {
     it = this->vars.find(e);
@@ -131,7 +140,7 @@ void calc::push_vars() {
 
 }
 
-std::vector<std::string> calc::splitString(std::string &input) {
+std::vector<std::string> Calculator::splitString(std::string &input) {
   std::string buffer = "";
   std::vector<std::string> tokens;
   bool digitLock = false;
@@ -153,7 +162,7 @@ std::vector<std::string> calc::splitString(std::string &input) {
       tokens.push_back(buffer);
       buffer.clear();
     }
-    if(calc::isOperator(e)){
+    if(Calculator::isOperator(e)){
       if(charLock) {
         charLock = false;
         tokens.push_back(buffer);
@@ -177,7 +186,7 @@ std::vector<std::string> calc::splitString(std::string &input) {
   return tokens;
 }
 
-bool calc::isOperator(char& op){
+bool Calculator::isOperator(char& op){
   switch(op){
     case '%': return true;
     case '/': return true;
@@ -190,7 +199,7 @@ bool calc::isOperator(char& op){
   }
 }
 
-std::string calc::calculate(std::vector<std::string>& input) {
+std::string Calculator::calculate(std::vector<std::string>& input) {
   this->tokens = input;
   try{
     this->push_vars();
@@ -215,16 +224,16 @@ std::string calc::calculate(std::vector<std::string>& input) {
   return "Something went wrong...";
 }
 
-calc::calc(){}
+Calculator::Calculator(){}
 
-bool calc::hasNext(){
+bool Calculator::hasNext(){
   if(!this->tokens.empty()){
     return true;
   }
   return false;
 }
 
-void calc::next(){
+void Calculator::next(){
   if(this->hasNext()){
     this->current = this->tokens.front();
     tokens.erase(tokens.begin());
@@ -233,7 +242,7 @@ void calc::next(){
   }
 }
 
-double calc::handleExpression(){
+double Calculator::handleExpression(){
   double result = this->handleTerm();
   if(!std::isdigit(this->current.front())){
     while(this->current != "" && this->current != ")"){
@@ -255,7 +264,7 @@ double calc::handleExpression(){
   return result;
 }
 
-double calc::handleTerm(){
+double Calculator::handleTerm(){
   double result = this->handleFactor();
   double div = 0;
   switch(this->current.front()){
@@ -291,7 +300,7 @@ double calc::handleTerm(){
   return result;
 }
 
-double calc::handleFactor(){
+double Calculator::handleFactor(){
   double result = 0;
   if(this->current == "("){
     this->next();
@@ -310,10 +319,28 @@ double calc::handleFactor(){
   return result;
 }
 
-std::vector<std::string> calc::get_tokens() {
+std::vector<std::string> Calculator::get_tokens() {
   return this->tokens;
 }
 
-std::map<std::string, std::string> calc::get_vars() {
+std::map<std::string, std::string> Calculator::get_vars() {
   return this->vars;
 }
+
+int testat_interface(std::string expr) {
+  Calculator* calculator = new Calculator();
+  std::vector<std::string> input = Calculator::splitString(expr);
+  return std::stoi(calculator->calculate(input));
+}
+
+auto calc(int first, int second,char  op) -> int {
+  std::string expr = std::to_string(first) + op + std::to_string(second);
+  return testat_interface(expr);
+}
+
+auto calc(std::istream & stream) -> int {
+  std::string expr(std::istreambuf_iterator<char>(stream), {});
+  return testat_interface(expr);
+}
+
+
