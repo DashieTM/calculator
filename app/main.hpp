@@ -13,6 +13,7 @@ class MyWindow : public Gtk::Window {
   
   public:
   MyWindow();
+  ~MyWindow();
   void on_button_clicked();
   void on_clear_clicked();
   void on_delete_clicked();

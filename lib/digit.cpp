@@ -10,6 +10,7 @@ void printDigit(std::string& str, std::ostream& stream) {
       stream << arr[i] << "\n";
     }
   }
+  delete[] arr;
 }
 
 void printDigit(int i, std::ostream& stream) {
@@ -99,7 +100,7 @@ void writeChar(std::string* arr,char i) {
     case '-':
       arr[0] += "    ";
       arr[1] += "    ";
-      arr[2] += " -  ";
+      arr[2] += " -- ";
       arr[3] += "    ";
       arr[4] += "    ";
       return;
@@ -119,4 +120,5 @@ void printErr(std::ostream& stream) {
       stream << arr[i] << "\n";
     }
   }
+  delete[] arr;
 }

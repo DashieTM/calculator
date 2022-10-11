@@ -175,6 +175,10 @@ MyWindow::MyWindow():
   //set_child(box);
 }
 
+MyWindow::~MyWindow(){
+  delete this->calculator;
+}
+
 int main(int argc, char* argv[]) {
   if(argc == 2){
   std::string test =  argv[1];

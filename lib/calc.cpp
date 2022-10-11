@@ -46,7 +46,7 @@ void Calculator::interface(bool fancy, std::istream& is) {
       std::cout << varreturn ;
     } else {
       std::string result = this->calculate(input);
-      if(std::isdigit(result.front())) {
+      if(result.front() == '-' || std::isdigit(result.front())) {
         if(fancy){
           std::cout << "Result:\n";
           printDigit(result,std::cout); 
@@ -78,7 +78,9 @@ std::string Calculator::gui(std::string& str, bool var_edit) {
 std::string Calculator::testinterface(std::string str) {
   Calculator* calculator = new Calculator();
   std::vector<std::string> input = Calculator::splitString(str);
-  return calculator->calculate(input);
+  std::string result = calculator->calculate(input);
+  delete calculator;
+  return result; 
 }
 
 std::string Calculator::write_var(std::string& key, std::string& value) {
