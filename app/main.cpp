@@ -165,6 +165,10 @@ MyWindow::MyWindow():
   menu.set_child(menuBox);
   menuBox.append(varEntry);
   menuBox.append(treeView);
+  menuBox.set_spacing(5);
+  varEntry.set_margin(5);
+  treeView.set_margin(5);
+  treeView.set_margin_top(0);
 
   treeModel = Gtk::ListStore::create(varList);
   treeView.set_model(treeModel);

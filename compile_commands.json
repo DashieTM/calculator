@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/home/dashie/gits/GTKTest",
+  "command": "/usr/bin/c++  -I/home/dashie/gits/GTKTest/lib -std=gnu++20 -o CMakeFiles/CalcLib.dir/lib/calc.cpp.o -c /home/dashie/gits/GTKTest/lib/calc.cpp",
+  "file": "/home/dashie/gits/GTKTest/lib/calc.cpp"
+},
+{
+  "directory": "/home/dashie/gits/GTKTest",
+  "command": "/usr/bin/c++  -I/home/dashie/gits/GTKTest/lib -std=gnu++20 -o CMakeFiles/CalcLib.dir/lib/digit.cpp.o -c /home/dashie/gits/GTKTest/lib/digit.cpp",
+  "file": "/home/dashie/gits/GTKTest/lib/digit.cpp"
+},
+{
+  "directory": "/home/dashie/gits/GTKTest",
+  "command": "/usr/bin/c++  -I/home/dashie/gits/GTKTest/lib -I/home/dashie/gits/GTKTest/CUTE -std=gnu++20 -o CMakeFiles/CalcTest.dir/test/calc_test.cpp.o -c /home/dashie/gits/GTKTest/test/calc_test.cpp",
+  "file": "/home/dashie/gits/GTKTest/test/calc_test.cpp"
+},
+{
+  "directory": "/home/dashie/gits/GTKTest",
+  "command": "/usr/bin/c++  -I/home/dashie/gits/GTKTest/lib -isystem /usr/include/gtk-4.0 -isystem /usr/include/pango-1.0 -isystem /usr/include/glib-2.0 -isystem /usr/lib/glib-2.0/include -isystem /usr/include/sysprof-4 -isystem /usr/include/harfbuzz -isystem /usr/include/freetype2 -isystem /usr/include/libpng16 -isystem /usr/include/libmount -isystem /usr/include/blkid -isystem /usr/include/fribidi -isystem /usr/include/cairo -isystem /usr/include/lzo -isystem /usr/include/pixman-1 -isystem /usr/include/gdk-pixbuf-2.0 -isystem /usr/include/graphene-1.0 -isystem /usr/lib/graphene-1.0/include -isystem /usr/include/gtkmm-4.0 -isystem /usr/lib/gtkmm-4.0/include -isystem /usr/include/giomm-2.68 -isystem /usr/lib/giomm-2.68/include -isystem /usr/include/glibmm-2.68 -isystem /usr/lib/glibmm-2.68/include -isystem /usr/include/sigc++-3.0 -isystem /usr/lib/sigc++-3.0/include -isystem /usr/include/cairomm-1.16 -isystem /usr/lib/cairomm-1.16/include -isystem /usr/include/pangomm-2.48 -isystem /usr/lib/pangomm-2.48/include -isystem /usr/include/gtk-4.0/unix-print -mfpmath=sse -msse -msse2 -pthread -std=gnu++20 -o CMakeFiles/Calculator.dir/app/main.cpp.o -c /home/dashie/gits/GTKTest/app/main.cpp",
+  "file": "/home/dashie/gits/GTKTest/app/main.cpp"
+}
+]
