@@ -11,10 +11,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "") # works
 #[===[ LIBRARY ]===]
 
 add_library("CalcLib" STATIC
-  "lib/calc.cpp"
-  "lib/digit.cpp"
-  "lib/pocketcalculator.cpp"
-  "lib/sevensegment.cpp"
+  "lib/Calc.cpp"
+  "lib/Pocketcalculator.cpp"
+  "lib/Sevensegment.cpp"
 )
 
 target_include_directories("CalcLib" PUBLIC

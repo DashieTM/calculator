@@ -1,5 +1,5 @@
-#include "calc.hpp"
-#include "pocketcalculator.hpp"
+#include "Calc.hpp"
+#include "Pocketcalculator.hpp"
 #include <gtkmm.h>
 class MyWindow : public Gtk::Window {
   

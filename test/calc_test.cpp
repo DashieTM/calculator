@@ -1,4 +1,4 @@
-#include "calc.hpp"
+#include "Calc.hpp"
 
 #include <cute/cute.h>
 #include <cute/cute_equals.h>

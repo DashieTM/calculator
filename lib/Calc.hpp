@@ -48,5 +48,5 @@ class Calculator{
     static std::vector<std::string> splitString(std::string& input);
 };
 
-auto calc(int first, int second, char op) -> int;
-auto calc(std::istream & stream) -> int;
+auto calc(int, int, char) -> int;
+auto calc(std::istream &) -> int;

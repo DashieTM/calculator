@@ -1,4 +1,16 @@
-#include "digit.hpp"
+#include "Sevensegment.hpp"
+
+auto printLargeDigit(int i, std::ostream &out) -> void {
+  printDigit(i, out); 
+}
+
+auto printLargeNumber(int i, std::ostream &out) -> void {
+  printDigit(i, out);
+}
+
+auto printLargeError(std::ostream &out) -> void {
+  printErr(out); 
+}
 
 void printDigit(std::string& str, std::ostream& stream) {
   std::string* arr = new std::string[5];

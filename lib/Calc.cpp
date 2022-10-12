@@ -1,5 +1,5 @@
-#include "calc.hpp"
-#include "digit.hpp"
+#include "Calc.hpp"
+#include "Sevensegment.hpp"
 /*
  * standard grammar for calculator
  * exp := term | exp + term | exp - term
