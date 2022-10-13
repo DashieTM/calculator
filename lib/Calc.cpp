@@ -162,6 +162,7 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
       continue;
     } else if (digitLock) {
       digitLock = false;
+      dotLock = false;
       tokens.push_back(buffer);
       buffer.clear();
     }
@@ -186,6 +187,11 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
   if (buffer != "") {
     tokens.push_back(buffer);
   }
+
+  for(auto e : tokens) {
+    std::cout << e << std::endl;
+  }
+
   return tokens;
 }
 
