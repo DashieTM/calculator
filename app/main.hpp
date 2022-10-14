@@ -63,6 +63,7 @@ public:
   Gtk::Box menuBox;
   Gtk::Entry varEntry;
   Gtk::Entry entryBox;
+  Gtk::Entry resultBox;
   Gtk::Box box;
   Gtk::Box comboBox;
   Gtk::Box mainRow;

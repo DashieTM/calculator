@@ -12,6 +12,8 @@
 class Calculator {
 protected:
   std::vector<std::string> tokens;
+  std::vector<std::string> expressions;
+  std::vector<std::string> results;
   std::map<std::string, std::string> vars;
   std::string current;
   bool b_open_bracket;
@@ -36,12 +38,17 @@ public:
   void pushVars();
   void interface(bool fancy, std::istream &is = std::cin);
   void setTokens(std::vector<std::string> &tokens);
+  void clearResults();
+  void clearExpressions();
+  void listPrevious(std::ostream& stream = std::cout);
   std::string calculate(std::vector<std::string> &input);
   std::string gui(std::string &str, bool var_edit);
   std::string handleVars(std::vector<std::string> &str);
   std::string writeVar(std::string &key, std::string &value);
   std::string deleteVars(std::string &delkey);
+  std::string getResults();
   std::vector<std::string> getTokens();
+  std::vector<std::string> getExpressions();
   std::map<std::string, std::string> getVars();
 
   static double test_interface(std::string expr);

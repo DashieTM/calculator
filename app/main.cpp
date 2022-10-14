@@ -8,7 +8,7 @@ MyWindow::MyWindow()
       c0_button("0"), opl_button("+"), omi_button("-"), omu_button("*"),
       odi_button("/"), omo_button("%"), obo_button("("), obc_button(")"),
       dot_button("."), menu_button(), box(Gtk::Orientation::VERTICAL),
-      menuBox(Gtk::Orientation::VERTICAL), varEntry(), menu(), comboBox(),
+      menuBox(Gtk::Orientation::VERTICAL), varEntry(), resultBox(), menu(), comboBox(),
       mainRow(), numberRow1(), numberRow2(), numberRow3(), numberRow4(),
       numberBox(Gtk::Orientation::VERTICAL),
       operatorRow1(Gtk::Orientation::VERTICAL),
@@ -79,6 +79,7 @@ MyWindow::MyWindow()
   mainRow.set_margin_start(10);
   mainRow.set_margin_top(10);
   box.append(comboBox);
+  box.append(resultBox);
 
   comboBox.append(numberBox);
   comboBox.append(operatorBox);
@@ -204,6 +205,7 @@ void MyWindow::on_button_clicked() {
     this->result = "";
     this->result_shown = true;
   }
+  this->resultBox.set_text(this->calculator->getResults());
 }
 
 void MyWindow::on_clear_clicked() {
@@ -240,6 +242,7 @@ void MyWindow::on_enter_pressed() {
     this->result_shown = true;
     this->result = "";
   }
+  this->resultBox.set_text(this->calculator->getResults());
 }
 void MyWindow::on_1_clicked() {
   this->result = this->entryBox.get_text();

@@ -40,26 +40,32 @@ void Calculator::interface(bool fancy, std::istream &is) {
   if (line != "") {
     if (line == "exit") {
       return;
-    }
-    std::vector<std::string> input = Calculator::splitString(line);
-    std::string varreturn = this->handleVars(input);
-    if (varreturn != "") {
-      std::cout << varreturn;
+    } else if (line == "list") {
+      listPrevious();
     } else {
-      std::string result = this->calculate(input);
-      if (result.front() == '-' || std::isdigit(result.front())) {
-        if (fancy) {
-          std::cout << "Result:\n";
-          printDigit(result, std::cout);
-        } else {
-          std::cout << "Result: " << result << "\n";
-        }
+      this->expressions.push_back(line);
+      std::vector<std::string> input = Calculator::splitString(line);
+      std::string varreturn = this->handleVars(input);
+      if (varreturn != "") {
+        std::cout << varreturn;
       } else {
-        if (fancy) {
-          printErr(std::cout);
-          std::cout << result << "\n";
+        std::string result = this->calculate(input);
+        if (result.front() == '-' || std::isdigit(result.front())) {
+          if (fancy) {
+            std::cout << "Result:\n";
+            printDigit(result, std::cout);
+          } else {
+            std::cout << "Result: " << result << "\n";
+          }
         } else {
-          std::cout << result << "\n";
+          if (fancy) {
+            this->expressions.pop_back();
+            printErr(std::cout);
+            std::cout << result << "\n";
+          } else {
+            this->expressions.pop_back();
+            std::cout << result << "\n";
+          }
         }
       }
     }
@@ -68,11 +74,17 @@ void Calculator::interface(bool fancy, std::istream &is) {
 }
 
 std::string Calculator::gui(std::string &str, bool var_edit) {
+  this->expressions.push_back(str);
   std::vector<std::string> input = Calculator::splitString(str);
   if (var_edit) {
+    this->expressions.pop_back();
     return this->handleVars(input);
   } else {
-    return this->calculate(input);
+    std::string result = this->calculate(input);
+    if (!std::isdigit(result.front()) && result.front() != '-') {
+      this->expressions.pop_back();
+    }
+    return result;
   }
 }
 
@@ -226,6 +238,7 @@ std::string Calculator::calculate(std::vector<std::string> &input) {
     std::string result = std::to_string(this->handleExpression());
     result.erase(result.find_last_not_of('0') + 1, std::string::npos);
     result.erase(result.find_last_not_of('.') + 1, std::string::npos);
+    this->results.push_back(result + "\n");
     return result;
   } catch (NotANumberException e) {
     return "Expected a number at " + this->current;
@@ -342,9 +355,25 @@ double Calculator::handleFactor() {
 
 std::vector<std::string> Calculator::getTokens() { return this->tokens; }
 
+std::string Calculator::getResults() {
+  std::string buffer = "";
+  for (int i = 0; i < this->expressions.size(); i++) {
+    buffer += (this->expressions.at(i) + " = " + this->results.at(i));
+  }
+  return buffer; 
+}
+
+std::vector<std::string> Calculator::getExpressions() {
+  return this->expressions;
+}
+
 void Calculator::setTokens(std::vector<std::string> &tokens) {
   this->tokens = tokens;
 }
+
+void Calculator::clearResults() { this->results.clear(); }
+
+void Calculator::clearExpressions() { this->expressions.clear(); }
 
 std::map<std::string, std::string> Calculator::getVars() { return this->vars; }
 
@@ -357,6 +386,12 @@ double Calculator::test_interface(std::string expr) {
   double result = calculator->handleExpression();
   delete calculator;
   return result;
+}
+
+void Calculator::listPrevious(std::ostream& stream) {
+  for (int i = 0; i < this->expressions.size(); i++) {
+    stream << this->expressions.at(i) << " = " << this->results.at(i);
+  } 
 }
 
 auto calc(int first, int second, char op) -> int {
