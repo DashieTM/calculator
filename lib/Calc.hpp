@@ -33,8 +33,7 @@ public:
   double handleFactor();
   void readVars();
   void pushVars();
-  void interface(bool fancy);
-  void interface(bool fancy, std::istream &is);
+  void interface(bool fancy, std::istream &is = std::cin);
   void setTokens(std::vector<std::string> &tokens);
   std::string calculate(std::vector<std::string> &input);
   std::string gui(std::string &str, bool var_edit);

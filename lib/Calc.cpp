@@ -30,8 +30,6 @@ std::string Calculator::handleVars(std::vector<std::string> &input) {
   return "";
 }
 
-void Calculator::interface(bool fancy) { this->interface(fancy, std::cin); }
-
 void Calculator::interface(bool fancy, std::istream &is) {
   std::cout << "Enter an expression:\n";
   std::string line = "";
@@ -139,6 +137,13 @@ void Calculator::pushVars() {
     it = this->vars.find(e);
     if (it != this->vars.end()) {
       e = it->second;
+    } else if (e.front() == '-') {
+      std::string buffer = e;
+      buffer.erase(buffer.begin());
+      it = this->vars.find(buffer);
+      if (it != this->vars.end()) {
+        e = '-' + it->second;
+      }
     }
   }
 }
@@ -150,6 +155,7 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
   bool charLock = false;
   bool dotLock = false;
   bool opLock = true;
+  bool opCurrent = false;
   for (auto &e : input) {
     if (std::isdigit(e) || (e == '.' && !dotLock) || (e == '-' && opLock)) {
       if (charLock) {
@@ -159,11 +165,16 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
       }
       if (e == '.')
         dotLock = true;
+      if (e == '-') {
+        opCurrent = true;
+      } else {
+        opCurrent = false;
+      }
       opLock = false;
       digitLock = true;
       buffer += e;
       continue;
-    } else if (digitLock) {
+    } else if (digitLock && !opCurrent) {
       digitLock = false;
       dotLock = false;
       tokens.push_back(buffer);
@@ -191,11 +202,6 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
   if (buffer != "") {
     tokens.push_back(buffer);
   }
-
-  for(auto e : tokens) {
-    std::cout << e << std::endl;
-  }
-
   return tokens;
 }
 
