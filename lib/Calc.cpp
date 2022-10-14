@@ -286,15 +286,17 @@ void Calculator::next() {
 
 double Calculator::handleExpression() {
   double result = this->handleTerm();
-  if (!std::isdigit(this->current.front())) {
+  if (!this->b_expect_number) {
     while (this->current != "" && this->current != ")") {
       switch (this->current.front()) {
       case '+':
         this->next();
+        this->b_expect_number = true;
         result += this->handleTerm();
         break;
       case '-':
         this->next();
+        this->b_expect_number = true;
         result -= this->handleTerm();
         break;
       default:
@@ -312,10 +314,12 @@ double Calculator::handleTerm() {
   switch (this->current.front()) {
   case '*':
     this->next();
+    this->b_expect_number = true;
     result *= this->handleTerm();
     break;
   case '/':
     this->next();
+    this->b_expect_number = true;
     div = this->handleFactor();
     if (div == 0)
       throw(ZeroDivisionException());
@@ -328,6 +332,7 @@ double Calculator::handleTerm() {
     break;
   case '%':
     this->next();
+    this->b_expect_number = true;
     div = this->handleFactor();
     if (div == 0)
       throw(ZeroDivisionException());
@@ -353,6 +358,7 @@ double Calculator::handleFactor() {
       throw(BrackedException());
     }
     this->next();
+    this->b_expect_number = false;
   } else {
     if (!std::isdigit(this->current.front())) {
       if (this->current.length() < 2 || this->current.front() != '-') {
@@ -361,6 +367,7 @@ double Calculator::handleFactor() {
     }
     result = std::stod(this->current);
     this->next();
+    this->b_expect_number = false;
   }
   return result;
 }
@@ -408,22 +415,22 @@ double Calculator::test_interface(std::string expr) {
   return result;
 }
 
-void Calculator::testatInterface(std::istream &is, std::ostream& os) {
+void Calculator::testatInterface(std::istream &is, std::ostream &os) {
   std::string line = "";
-  if (std::getline(is, line) && !is.eof()) {
-  } else {
-    return;
-  }
-  if (line != "") {
-    this->expressions.push_back(line);
-    std::vector<std::string> input = Calculator::splitString(line);
-    std::string result = this->calculate(input);
-    if (result.front() == '-' || std::isdigit(result.front())) {
-      printDigit(result, os);
-    } else {
-      printErr(os);
+  if(is.eof()) return;
+  if (std::getline(is, line) && !is.bad()) {
+    if (line != "") {
+      this->expressions.push_back(line);
+      std::vector<std::string> input = Calculator::splitString(line);
+      std::string result = this->calculate(input);
+      if (result.front() == '-' || std::isdigit(result.front())) {
+        printDigit(result, os);
+      } else {
+        printErr(os);
+      }
     }
-  }
+  } 
+  testatInterface(is,os);
 }
 
 auto calc(int first, int second, char op) -> int {
@@ -432,6 +439,10 @@ auto calc(int first, int second, char op) -> int {
 }
 
 auto calc(std::istream &stream) -> int {
-  std::string expr(std::istreambuf_iterator<char>(stream), {});
-  return (int)Calculator::test_interface(expr);
+  if(!stream.eof() && !stream.bad()) {
+    std::string expr(std::istreambuf_iterator<char>(stream), {});
+    return (int)Calculator::test_interface(expr);
+  } else {
+    throw Calculator::StreamBadException();
+  }
 }

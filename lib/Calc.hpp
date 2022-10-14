@@ -17,6 +17,7 @@ protected:
   std::map<std::string, std::string> vars;
   std::string current;
   bool b_open_bracket;
+  bool b_expect_number;
   const std::string homedir = getenv("HOME");
   const std::string vardir = homedir + "/.local/share/calc/vars.txt";
 
@@ -27,6 +28,7 @@ public:
   class NotAnOperatorException : public std::exception {};
   class NotANumberException : public std::exception {};
   class BrackedException : public std::exception {};
+  class StreamBadException : public std::exception {};
   
   Calculator();
   void next();
