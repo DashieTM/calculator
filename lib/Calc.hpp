@@ -37,6 +37,7 @@ public:
   void readVars();
   void pushVars();
   void interface(bool fancy, std::istream &is = std::cin);
+  void testatInterface(std::istream & is, std::ostream& os);
   void setTokens(std::vector<std::string> &tokens);
   void clearResults();
   void clearExpressions();

@@ -139,7 +139,8 @@ void Calculator::readVars() {
     }
     vars.close();
     if (!this->results.empty()) {
-      this->vars.insert(std::pair<std::string, std::string>("result",this->results.back()));
+      this->vars.insert(
+          std::pair<std::string, std::string>("result", this->results.back()));
     }
   } else
     std::cout << "Unable to open file";
@@ -371,7 +372,7 @@ std::string Calculator::getResults() {
   for (int i = 0; i < this->expressions.size(); i++) {
     buffer += (this->expressions.at(i) + " = " + this->results.at(i)) + "\n";
   }
-  return buffer; 
+  return buffer;
 }
 
 std::vector<std::string> Calculator::getExpressions() {
@@ -405,6 +406,24 @@ double Calculator::test_interface(std::string expr) {
   double result = calculator->handleExpression();
   delete calculator;
   return result;
+}
+
+void Calculator::testatInterface(std::istream &is, std::ostream& os) {
+  std::string line = "";
+  if (std::getline(is, line) && !is.eof()) {
+  } else {
+    return;
+  }
+  if (line != "") {
+    this->expressions.push_back(line);
+    std::vector<std::string> input = Calculator::splitString(line);
+    std::string result = this->calculate(input);
+    if (result.front() == '-' || std::isdigit(result.front())) {
+      printDigit(result, os);
+    } else {
+      printErr(os);
+    }
+  }
 }
 
 auto calc(int first, int second, char op) -> int {
