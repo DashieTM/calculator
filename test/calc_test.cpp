@@ -48,8 +48,10 @@ TEST(simpleDivision) {
   result = Calculator::test_interface("5/99");
   result = result - 0.0505051;
   ASSERT_EQUAL(true, result < 0.0000);
-  ASSERT_THROWS(Calculator::test_interface("1/0"), Calculator::ZeroDivisionException);
-  ASSERT_THROWS(Calculator::test_interface("1%0"), Calculator::ZeroDivisionException);
+  ASSERT_THROWS(Calculator::test_interface("1/0"),
+                Calculator::ZeroDivisionException);
+  ASSERT_THROWS(Calculator::test_interface("1%0"),
+                Calculator::ZeroDivisionException);
 }
 TEST(longExpression) {
   double result = Calculator::test_interface("5 + 3 * 8 / 2 + ( 5 - 2 )");
@@ -61,9 +63,12 @@ TEST(longExpression) {
 }
 
 TEST(randomStrings) {
-  ASSERT_THROWS(Calculator::test_interface("not a calculation") , Calculator::NotANumberException);
-  ASSERT_THROWS(Calculator::test_interface("5 f 5"), Calculator::NotAnOperatorException);
-  ASSERT_THROWS(Calculator::test_interface("( 5 + 5"), Calculator::BrackedException);
+  ASSERT_THROWS(Calculator::test_interface("not a calculation"),
+                Calculator::NotANumberException);
+  ASSERT_THROWS(Calculator::test_interface("5 f 5"),
+                Calculator::NotAnOperatorException);
+  ASSERT_THROWS(Calculator::test_interface("( 5 + 5"),
+                Calculator::BrackedException);
 }
 
 auto createCalcSuite() -> cute::suite {
