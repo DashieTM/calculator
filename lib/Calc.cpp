@@ -158,6 +158,7 @@ void Calculator::pushVars() {
       it = this->vars.find(buffer);
       if (it != this->vars.end()) {
         if (it->second.front() == '-') {
+          it->second.erase(it->second.begin());
           e = it->second;
         } else {
           e = '-' + it->second;
@@ -186,6 +187,8 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
         dotLock = true;
       if (e == '-') {
         opCurrent = true;
+        buffer += e;
+        continue;
       } else {
         opCurrent = false;
       }
