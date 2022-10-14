@@ -2,16 +2,15 @@
 #include "Pocketcalculator.hpp"
 #include <gtkmm.h>
 class MyWindow : public Gtk::Window {
-  
-  protected:
-    std::string result;
-    bool result_shown;
-    bool menu_shown;
-    Calculator* calculator;
-  
-  private:
-  
-  public:
+
+protected:
+  std::string result;
+  bool result_shown;
+  bool menu_shown;
+  Calculator *calculator;
+
+private:
+public:
   MyWindow();
   ~MyWindow();
   void on_button_clicked();
@@ -77,21 +76,18 @@ class MyWindow : public Gtk::Window {
   Gtk::Box operatorBox;
 
   class Columns : public Gtk::TreeModel::ColumnRecord {
-    public:
-      Columns() {
-        add(key);
-        add(value);
-      }
+  public:
+    Columns() {
+      add(key);
+      add(value);
+    }
 
-      Gtk::TreeModelColumn<std::string> key;
-      Gtk::TreeModelColumn<std::string> value;
+    Gtk::TreeModelColumn<std::string> key;
+    Gtk::TreeModelColumn<std::string> value;
   };
 
   Columns varList;
   Gtk::TreeView treeView;
   Glib::RefPtr<Gtk::ListStore> treeModel;
   void get_list();
-
-
-
 };

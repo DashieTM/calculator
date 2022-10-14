@@ -1,5 +1,5 @@
 #pragma once
-#include <iostream>
 #include "Calc.hpp"
+#include <iostream>
 
 auto pocketcalculator(std::istream &in, std::ostream &out) -> void;

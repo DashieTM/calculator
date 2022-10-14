@@ -18,13 +18,14 @@ protected:
   const std::string homedir = getenv("HOME");
   const std::string vardir = homedir + "/.local/share/calc/vars.txt";
 
+private:
+public:
+  
   class ZeroDivisionException : public std::exception {};
   class NotAnOperatorException : public std::exception {};
   class NotANumberException : public std::exception {};
   class BrackedException : public std::exception {};
-
-private:
-public:
+  
   Calculator();
   void next();
   bool hasNext();
@@ -43,9 +44,8 @@ public:
   std::vector<std::string> getTokens();
   std::map<std::string, std::string> getVars();
 
-  static int testatInterface(std::string expr);
+  static double test_interface(std::string expr);
   static void greeting();
-  static std::string testinterface(std::string str);
   static bool isOperator(char &op);
   static std::vector<std::string> splitString(std::string &input);
 };

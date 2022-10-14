@@ -76,14 +76,6 @@ std::string Calculator::gui(std::string &str, bool var_edit) {
   }
 }
 
-std::string Calculator::testinterface(std::string str) {
-  Calculator *calculator = new Calculator();
-  std::vector<std::string> input = Calculator::splitString(str);
-  std::string result = calculator->calculate(input);
-  delete calculator;
-  return result;
-}
-
 std::string Calculator::writeVar(std::string &key, std::string &value) {
   std::ofstream vars;
   vars.open(this->vardir, std::ios_base::app);
@@ -356,23 +348,23 @@ void Calculator::setTokens(std::vector<std::string> &tokens) {
 
 std::map<std::string, std::string> Calculator::getVars() { return this->vars; }
 
-int testat_interface(std::string expr) {
+double Calculator::test_interface(std::string expr) {
   Calculator *calculator = new Calculator();
   std::vector<std::string> input = Calculator::splitString(expr);
   calculator->setTokens(input);
   calculator->pushVars();
   calculator->next();
-  int result = calculator->handleExpression();
+  double result = calculator->handleExpression();
   delete calculator;
   return result;
 }
 
 auto calc(int first, int second, char op) -> int {
   std::string expr = std::to_string(first) + op + std::to_string(second);
-  return testat_interface(expr);
+  return (int)Calculator::test_interface(expr);
 }
 
 auto calc(std::istream &stream) -> int {
   std::string expr(std::istreambuf_iterator<char>(stream), {});
-  return testat_interface(expr);
+  return (int)Calculator::test_interface(expr);
 }
