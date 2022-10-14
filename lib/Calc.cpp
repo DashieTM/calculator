@@ -41,7 +41,9 @@ void Calculator::interface(bool fancy, std::istream &is) {
     if (line == "exit") {
       return;
     } else if (line == "list") {
-      listPrevious();
+      std::cout << getResults();
+    } else if (line == "vars") {
+      std::cout << getVarList();
     } else {
       this->expressions.push_back(line);
       std::vector<std::string> input = Calculator::splitString(line);
@@ -367,7 +369,7 @@ std::vector<std::string> Calculator::getTokens() { return this->tokens; }
 std::string Calculator::getResults() {
   std::string buffer = "";
   for (int i = 0; i < this->expressions.size(); i++) {
-    buffer += (this->expressions.at(i) + " = " + this->results.at(i));
+    buffer += (this->expressions.at(i) + " = " + this->results.at(i)) + "\n";
   }
   return buffer; 
 }
@@ -386,6 +388,14 @@ void Calculator::clearExpressions() { this->expressions.clear(); }
 
 std::map<std::string, std::string> Calculator::getVars() { return this->vars; }
 
+std::string Calculator::getVarList() {
+  std::string varList = "";
+  for (auto e : this->vars) {
+    varList += e.first + " = " + e.second + "\n";
+  }
+  return varList;
+}
+
 double Calculator::test_interface(std::string expr) {
   Calculator *calculator = new Calculator();
   std::vector<std::string> input = Calculator::splitString(expr);
@@ -395,12 +405,6 @@ double Calculator::test_interface(std::string expr) {
   double result = calculator->handleExpression();
   delete calculator;
   return result;
-}
-
-void Calculator::listPrevious(std::ostream& stream) {
-  for (int i = 0; i < this->expressions.size(); i++) {
-    stream << this->expressions.at(i) << " = " << this->results.at(i);
-  } 
 }
 
 auto calc(int first, int second, char op) -> int {

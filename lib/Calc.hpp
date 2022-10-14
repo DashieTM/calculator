@@ -40,13 +40,13 @@ public:
   void setTokens(std::vector<std::string> &tokens);
   void clearResults();
   void clearExpressions();
-  void listPrevious(std::ostream& stream = std::cout);
   std::string calculate(std::vector<std::string> &input);
   std::string gui(std::string &str, bool var_edit);
   std::string handleVars(std::vector<std::string> &str);
   std::string writeVar(std::string &key, std::string &value);
   std::string deleteVars(std::string &delkey);
   std::string getResults();
+  std::string getVarList();
   std::vector<std::string> getTokens();
   std::vector<std::string> getExpressions();
   std::map<std::string, std::string> getVars();
