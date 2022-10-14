@@ -177,16 +177,9 @@ int main(int argc, char *argv[]) {
       Calculator::greeting();
       calculator->interface(true);
       delete (calculator);
-    } else if (test == "--testat") {
-      pocketcalculator(std::cin, std::cout);
-    } else if (test == "--testatauto") {
-      std::istringstream input{"5*3/2*9"};
-      std::cout << calc(input) << "\n";
-      std::cout << calc(5, 2, '%') << "\n";
-      std::cout << calc(1, 999, '/') << "\n";
-      std::cout << calc(1, 999, '%') << "\n";
     } else {
-      std::cout << "To run the program in gui launch it with the --gui flag\n "
+      std::cout << "To run the program in gui launch it with the --gui flag\n"
+                   "To run the program with fancy output launch it with the --fancy flag\n"
                    "Otherwise leave it empty for command line\n";
     }
   } else {

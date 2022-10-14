@@ -415,34 +415,3 @@ double Calculator::test_interface(std::string expr) {
   return result;
 }
 
-void Calculator::testatInterface(std::istream &is, std::ostream &os) {
-  std::string line = "";
-  if(is.eof()) return;
-  if (std::getline(is, line) && !is.bad()) {
-    if (line != "") {
-      this->expressions.push_back(line);
-      std::vector<std::string> input = Calculator::splitString(line);
-      std::string result = this->calculate(input);
-      if (result.front() == '-' || std::isdigit(result.front())) {
-        printDigit(result, os);
-      } else {
-        printErr(os);
-      }
-    }
-  } 
-  testatInterface(is,os);
-}
-
-auto calc(int first, int second, char op) -> int {
-  std::string expr = std::to_string(first) + op + std::to_string(second);
-  return (int)Calculator::test_interface(expr);
-}
-
-auto calc(std::istream &stream) -> int {
-  if(!stream.eof() && !stream.bad()) {
-    std::string expr(std::istreambuf_iterator<char>(stream), {});
-    return (int)Calculator::test_interface(expr);
-  } else {
-    throw Calculator::StreamBadException();
-  }
-}

@@ -1,5 +1,4 @@
 #include "Calc.hpp"
-#include "Pocketcalculator.hpp"
 #include <gtkmm.h>
 #include <gtkmm/scrolledwindow.h>
 class MyWindow : public Gtk::Window {

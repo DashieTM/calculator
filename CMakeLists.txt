@@ -12,7 +12,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "") # works
 
 add_library("CalcLib" STATIC
   "lib/Calc.cpp"
-  "lib/Pocketcalculator.cpp"
   "lib/Sevensegment.cpp"
 )
 
