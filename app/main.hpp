@@ -1,6 +1,7 @@
 #include "Calc.hpp"
 #include "Pocketcalculator.hpp"
 #include <gtkmm.h>
+#include <gtkmm/scrolledwindow.h>
 class MyWindow : public Gtk::Window {
 
 protected:
@@ -37,6 +38,7 @@ public:
   void on_menu_clicked();
   void on_enter_pressed();
   void on_varenter_pressed();
+  void setResults(std::string str);
   Gtk::Button m_button;
   Gtk::Button m2_button;
   Gtk::Button m3_button;
@@ -63,7 +65,9 @@ public:
   Gtk::Box menuBox;
   Gtk::Entry varEntry;
   Gtk::Entry entryBox;
-  Gtk::Entry resultBox;
+  Gtk::ScrolledWindow resultWindow;
+  Gtk::TextView resultView;
+  Glib::RefPtr<Gtk::TextBuffer> resultBuffer;
   Gtk::Box box;
   Gtk::Box comboBox;
   Gtk::Box mainRow;

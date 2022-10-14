@@ -8,7 +8,7 @@ MyWindow::MyWindow()
       c0_button("0"), opl_button("+"), omi_button("-"), omu_button("*"),
       odi_button("/"), omo_button("%"), obo_button("("), obc_button(")"),
       dot_button("."), menu_button(), box(Gtk::Orientation::VERTICAL),
-      menuBox(Gtk::Orientation::VERTICAL), varEntry(), resultBox(), menu(), comboBox(),
+      menuBox(Gtk::Orientation::VERTICAL), varEntry(), menu(), comboBox(), resultWindow(),
       mainRow(), numberRow1(), numberRow2(), numberRow3(), numberRow4(),
       numberBox(Gtk::Orientation::VERTICAL),
       operatorRow1(Gtk::Orientation::VERTICAL),
@@ -16,7 +16,7 @@ MyWindow::MyWindow()
   calculator = new Calculator();
   calculator->readVars();
   set_title("Calculator");
-  set_default_size(300, 300);
+  set_default_size(300, 400);
   m_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_button_clicked));
   m2_button.signal_clicked().connect(
@@ -79,10 +79,20 @@ MyWindow::MyWindow()
   mainRow.set_margin_start(10);
   mainRow.set_margin_top(10);
   box.append(comboBox);
-  box.append(resultBox);
-
+  
   comboBox.append(numberBox);
   comboBox.append(operatorBox);
+  box.append(resultWindow);
+  resultWindow.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);
+  resultWindow.set_expand();
+  resultWindow.set_margin(5);
+  resultView.set_editable(false);
+ 
+
+  resultWindow.set_child(resultView);
+  resultBuffer = Gtk::TextBuffer::create();
+  resultView.set_buffer(resultBuffer);
+
 
   numberBox.append(numberRow1);
   numberBox.append(numberRow2);
@@ -149,8 +159,7 @@ MyWindow::MyWindow()
 
   treeView.append_column("Variable Name", varList.key);
   treeView.append_column("Variable Value", varList.value);
-  // The final step is to display this newly created widget...
-  // set_child(box);
+
 }
 
 MyWindow::~MyWindow() { delete this->calculator; }
@@ -205,7 +214,7 @@ void MyWindow::on_button_clicked() {
     this->result = "";
     this->result_shown = true;
   }
-  this->resultBox.set_text(this->calculator->getResults());
+  this->setResults(this->calculator->getResults());
 }
 
 void MyWindow::on_clear_clicked() {
@@ -242,8 +251,9 @@ void MyWindow::on_enter_pressed() {
     this->result_shown = true;
     this->result = "";
   }
-  this->resultBox.set_text(this->calculator->getResults());
+  this->setResults(this->calculator->getResults());
 }
+
 void MyWindow::on_1_clicked() {
   this->result = this->entryBox.get_text();
   this->result += "1";
@@ -361,3 +371,10 @@ void MyWindow::get_list() {
     row[varList.value] = e.second;
   }
 }
+
+void MyWindow::setResults(std::string str) {
+  this->resultBuffer = Gtk::TextBuffer::create();
+  this->resultBuffer->set_text(str);
+  this->resultView.set_buffer(this->resultBuffer);
+}
+
