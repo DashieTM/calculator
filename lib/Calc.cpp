@@ -171,12 +171,14 @@ void Calculator::pushVars() {
 std::vector<std::string> Calculator::splitString(std::string &input) {
   std::string buffer = "";
   std::vector<std::string> tokens;
-  bool digitLock = false;
-  bool charLock = false;
-  bool dotLock = false;
-  bool opLock = true;
-  bool opCurrent = false;
+  bool digitLock = false; // digits follow after this -> number
+  bool charLock = false;  // chars follow after this -> variables
+  bool dotLock = false;   // floating point numbers
+  bool opLock = true;     // after this boolean an operator follows
+  bool opCurrent = false; // this indicates that we currently have a negative
+                          // prefix, or more...
   for (auto &e : input) {
+    // handle digits
     if (std::isdigit(e) || (e == '.' && !dotLock) || (e == '-' && opLock)) {
       if (charLock) {
         charLock = false;
@@ -186,6 +188,7 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
       if (e == '.')
         dotLock = true;
       if (e == '-') {
+        // start the - loop
         opCurrent = true;
         buffer += e;
         continue;
@@ -197,15 +200,18 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
       buffer += e;
       continue;
     } else if (digitLock && !opCurrent) {
+      // push the number
       digitLock = false;
       dotLock = false;
       tokens.push_back(buffer);
       buffer.clear();
     }
+    // handle chars and operators
     if (Calculator::isOperator(e)) {
       if (opCurrent && e == '-') {
+        // handle infinite - cases
         opLock = false;
-        digitLock= false;
+        digitLock = false;
         buffer += e;
         continue;
       }
@@ -220,18 +226,22 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
       opLock = true;
       buffer.clear();
     } else if (e != ' ') {
+      // handle all chars
       buffer += e;
       charLock = true;
       opCurrent = false;
     } else if (charLock) {
+      // push the chars
       charLock = false;
       tokens.push_back(buffer);
       buffer.clear();
     }
   }
+  // push last buffer
   if (buffer != "") {
     tokens.push_back(buffer);
   }
+  // this contracts the negatives: --- to -
   negativeClean(tokens);
   return tokens;
 }
@@ -262,6 +272,7 @@ std::string Calculator::calculate(std::vector<std::string> &input) {
   try {
     this->pushVars();
     this->next();
+    // removes unnecessary floating point precision
     std::string result = std::to_string(this->handleExpression());
     result.erase(result.find_last_not_of('0') + 1, std::string::npos);
     result.erase(result.find_last_not_of('.') + 1, std::string::npos);
@@ -302,6 +313,8 @@ void Calculator::next() {
 
 double Calculator::handleExpression() {
   double result = this->handleTerm();
+  // This hack is needed to check whether or not we are expecting a number
+  // if we are then we want to return it, otherwise throw an exception!
   if (!this->b_expect_number) {
     while (this->current != "" && this->current != ")") {
       switch (this->current.front()) {
@@ -340,6 +353,7 @@ double Calculator::handleTerm() {
     if (div == 0)
       throw(ZeroDivisionException());
     result /= div;
+    // special hack for divisions and modulo, as they aren't communitative!
     if (isOperator(this->current.front())) {
       this->tokens.insert(tokens.begin(), this->current);
       this->current = std::to_string(result);
@@ -353,6 +367,7 @@ double Calculator::handleTerm() {
     if (div == 0)
       throw(ZeroDivisionException());
     result = (double)((int)result % (int)div);
+    // special hack for divisions and modulo, as they aren't communitative!
     if (isOperator(this->current.front())) {
       this->tokens.insert(tokens.begin(), this->current);
       this->current = std::to_string(result);
@@ -420,6 +435,7 @@ std::string Calculator::getVarList() {
   return varList;
 }
 
+// interface used for unit tests
 double Calculator::test_interface(std::string expr) {
   Calculator *calculator = new Calculator();
   std::vector<std::string> input = Calculator::splitString(expr);
@@ -435,6 +451,9 @@ void Calculator::negativeClean(std::vector<std::string> &vec) {
   bool minLock = false;
   for (auto &e : vec) {
     if (e.size() > 1) {
+      // simply iterate over the amount of - and remove them all.
+      // at the end we check whether or not we have an even or uneven amount
+      // even means no change, uneven means negate the number
       while (e.front() == '-') {
         minLock = !minLock;
         e.erase(e.begin());

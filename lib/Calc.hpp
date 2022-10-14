@@ -19,6 +19,7 @@ protected:
   bool b_open_bracket;
   bool b_expect_number;
   const std::string homedir = getenv("HOME");
+  // haha, enjoy clutter :)
   const std::string vardir = homedir + "/.local/share/calc/vars.txt";
 
 private:

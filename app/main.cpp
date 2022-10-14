@@ -65,8 +65,6 @@ MyWindow::MyWindow()
   varEntry.signal_activate().connect(
       sigc::mem_fun(*this, &MyWindow::on_varenter_pressed));
 
-  // This packs the button into the Window (a container).
-  //(m_button);
   set_child(box);
   box.set_spacing(5);
   box.set_margin(5);
@@ -160,6 +158,16 @@ MyWindow::MyWindow()
   treeView.append_column("Variable Name", varList.key);
   treeView.append_column("Variable Value", varList.value);
 
+  // main structure:      comboBox:           Numbers:    Operators:
+  // EntryBox          Numbers | Operators    Row1        Row1
+  // mainRow                                  Row2        Row2
+  // combobox                                 Row3        Row3
+  // resultList
+
+  // PopupList
+  // EntryBox
+  // varList
+
 }
 
 MyWindow::~MyWindow() { delete this->calculator; }
@@ -190,6 +198,9 @@ int main(int argc, char *argv[]) {
     delete (calculator);
   }
 }
+
+// read the text, check if it is valid, aka not empty and push it to the calculator
+// then display the result and flush the string buffer used to enter an expression
 void MyWindow::on_button_clicked() {
   this->result = this->entryBox.get_text();
   if (this->result != "") {
@@ -210,6 +221,7 @@ void MyWindow::on_button_clicked() {
   this->setResults(this->calculator->getResults());
 }
 
+// flush the buffer to enter
 void MyWindow::on_clear_clicked() {
   this->result.clear();
   this->result_shown = false;
@@ -218,6 +230,7 @@ void MyWindow::on_clear_clicked() {
   this->result = "";
 }
 
+// popback one element -> char
 void MyWindow::on_delete_clicked() {
   this->result = this->entryBox.get_text();
   if (this->result_shown) {
@@ -231,6 +244,8 @@ void MyWindow::on_delete_clicked() {
   this->entryBox.set_text(this->result);
 }
 
+// read the text, check if it is valid, aka not empty and push it to the calculator
+// then display the result and flush the string buffer used to enter an expression
 void MyWindow::on_enter_pressed() {
   this->result = this->entryBox.get_text();
   if (this->result != "") {
@@ -340,6 +355,7 @@ void MyWindow::on_dot_clicked() {
 
 void MyWindow::on_menu_clicked() { this->get_list(); }
 
+// handles variable deletion and addition
 void MyWindow::on_varenter_pressed() {
   std::string varcommand;
   varcommand = this->varEntry.get_text();
@@ -356,6 +372,7 @@ void MyWindow::on_varenter_pressed() {
   varcommand = "";
 }
 
+// return the list of results
 void MyWindow::get_list() {
   this->treeModel->clear();
   for (auto e : this->calculator->getVars()) {
