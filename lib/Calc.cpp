@@ -19,7 +19,7 @@ std::string Calculator::handleVars(std::vector<std::string> &input) {
     if (input.size() > 1) {
       return this->writeVar(input.at(0), input.at(1));
     } else {
-      return "Please enter a variable and a number to assign.\n";
+      return "Please enter a variable and a number to assign.";
     }
   } else if (input.front() == "del") {
     input.erase(input.begin());
@@ -47,7 +47,7 @@ void Calculator::interface(bool fancy, std::istream &is) {
       std::vector<std::string> input = Calculator::splitString(line);
       std::string varreturn = this->handleVars(input);
       if (varreturn != "") {
-        std::cout << varreturn;
+        std::cout << varreturn + "\n";
       } else {
         std::string result = this->calculate(input);
         if (result.front() == '-' || std::isdigit(result.front())) {
@@ -89,15 +89,18 @@ std::string Calculator::gui(std::string &str, bool var_edit) {
 }
 
 std::string Calculator::writeVar(std::string &key, std::string &value) {
+  if (this->vars.find(key) != this->vars.end()) {
+    return "Variable exists already!";
+  }
   std::ofstream vars;
   vars.open(this->vardir, std::ios_base::app);
   if (vars.is_open()) {
     vars << key << std::endl;
     vars << value << std::endl;
     this->readVars();
-    return "added " + key + " to variables with value " + value + "\n";
+    return "added " + key + " to variables with value " + value;
   } else
-    return "Unable to open file\n";
+    return "Unable to open file";
 }
 
 std::string Calculator::deleteVars(std::string &delkey) {
@@ -105,19 +108,21 @@ std::string Calculator::deleteVars(std::string &delkey) {
   if (this->vars.find(delkey) != this->vars.end()) {
     this->vars.erase(delkey);
   } else {
-    return "The variable " + delkey + " was not found in the list!\n";
+    return "The variable " + delkey + " was not found in the list!";
   }
 
   std::ofstream vars(this->vardir);
   if (vars.is_open()) {
     for (auto e : this->vars) {
-      vars << e.first << std::endl;
-      vars << e.second << std::endl;
+      if (e.first != "result") {
+        vars << e.first << std::endl;
+        vars << e.second << std::endl;
+      }
     }
   } else {
     return "Unable to open file";
   }
-  return "deleted the variable " + delkey + "\n";
+  return "deleted the variable " + delkey;
 }
 
 void Calculator::readVars() {
@@ -131,6 +136,9 @@ void Calculator::readVars() {
       this->vars.insert(std::pair<std::string, std::string>(key, value));
     }
     vars.close();
+    if (!this->results.empty()) {
+      this->vars.insert(std::pair<std::string, std::string>("result",this->results.back()));
+    }
   } else
     std::cout << "Unable to open file";
 }
@@ -238,7 +246,8 @@ std::string Calculator::calculate(std::vector<std::string> &input) {
     std::string result = std::to_string(this->handleExpression());
     result.erase(result.find_last_not_of('0') + 1, std::string::npos);
     result.erase(result.find_last_not_of('.') + 1, std::string::npos);
-    this->results.push_back(result + "\n");
+    this->results.push_back(result);
+    this->vars["result"] = result;
     return result;
   } catch (NotANumberException e) {
     return "Expected a number at " + this->current;
