@@ -188,6 +188,7 @@ int main(int argc, char *argv[]) {
   }
 }
 void MyWindow::on_button_clicked() {
+  this->result = this->entryBox.get_text();
   if (this->result != "") {
     this->result = this->calculator->gui(this->result, false);
   } else {
@@ -210,9 +211,11 @@ void MyWindow::on_clear_clicked() {
   this->result_shown = false;
   this->entryBox.set_text("");
   this->entryBox.set_placeholder_text("Enter an expression.");
+  this->result = "";
 }
 
 void MyWindow::on_delete_clicked() {
+  this->result = this->entryBox.get_text();
   if (this->result_shown) {
     this->result_shown = false;
     this->result.clear();
