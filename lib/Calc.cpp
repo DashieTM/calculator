@@ -1,5 +1,6 @@
 #include "Calc.hpp"
 #include "Sevensegment.hpp"
+#include <exception>
 /*
  * standard grammar for calculator
  * exp := term | exp + term | exp - term
@@ -12,18 +13,18 @@ void Calculator::greeting() {
                "/ * %.\n Or enter exit to exit\n";
 }
 
-std::string Calculator::handle_vars(std::vector<std::string> &input) {
+std::string Calculator::handleVars(std::vector<std::string> &input) {
   if (input.front() == "add") {
     input.erase(input.begin());
     if (input.size() > 1) {
-      return this->write_var(input.at(0), input.at(1));
+      return this->writeVar(input.at(0), input.at(1));
     } else {
       return "Please enter a variable and a number to assign.\n";
     }
   } else if (input.front() == "del") {
     input.erase(input.begin());
     if (input.size() > 0) {
-      return this->delete_vars(input.at(0));
+      return this->deleteVars(input.at(0));
     }
   }
   return "";
@@ -43,7 +44,7 @@ void Calculator::interface(bool fancy, std::istream &is) {
       return;
     }
     std::vector<std::string> input = Calculator::splitString(line);
-    std::string varreturn = this->handle_vars(input);
+    std::string varreturn = this->handleVars(input);
     if (varreturn != "") {
       std::cout << varreturn;
     } else {
@@ -71,7 +72,7 @@ void Calculator::interface(bool fancy, std::istream &is) {
 std::string Calculator::gui(std::string &str, bool var_edit) {
   std::vector<std::string> input = Calculator::splitString(str);
   if (var_edit) {
-    return this->handle_vars(input);
+    return this->handleVars(input);
   } else {
     return this->calculate(input);
   }
@@ -85,19 +86,19 @@ std::string Calculator::testinterface(std::string str) {
   return result;
 }
 
-std::string Calculator::write_var(std::string &key, std::string &value) {
+std::string Calculator::writeVar(std::string &key, std::string &value) {
   std::ofstream vars;
   vars.open(this->vardir, std::ios_base::app);
   if (vars.is_open()) {
     vars << key << std::endl;
     vars << value << std::endl;
-    this->read_vars();
+    this->readVars();
     return "added " + key + " to variables with value " + value + "\n";
   } else
     return "Unable to open file\n";
 }
 
-std::string Calculator::delete_vars(std::string &delkey) {
+std::string Calculator::deleteVars(std::string &delkey) {
   std::map<std::string, std::string>::iterator it;
   if (this->vars.find(delkey) != this->vars.end()) {
     this->vars.erase(delkey);
@@ -117,7 +118,7 @@ std::string Calculator::delete_vars(std::string &delkey) {
   return "deleted the variable " + delkey + "\n";
 }
 
-void Calculator::read_vars() {
+void Calculator::readVars() {
   this->vars.clear();
   std::string key;
   std::string value;
@@ -132,7 +133,7 @@ void Calculator::read_vars() {
     std::cout << "Unable to open file";
 }
 
-void Calculator::push_vars() {
+void Calculator::pushVars() {
   std::map<std::string, std::string>::iterator it;
   for (auto &e : this->tokens) {
     it = this->vars.find(e);
@@ -148,8 +149,9 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
   bool digitLock = false;
   bool charLock = false;
   bool dotLock = false;
+  bool opLock = true;
   for (auto &e : input) {
-    if (std::isdigit(e) || (e == '.' && !dotLock)) {
+    if (std::isdigit(e) || (e == '.' && !dotLock) || (e == '-' && opLock)) {
       if (charLock) {
         charLock = false;
         tokens.push_back(buffer);
@@ -157,6 +159,7 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
       }
       if (e == '.')
         dotLock = true;
+      opLock = false;
       digitLock = true;
       buffer += e;
       continue;
@@ -174,6 +177,7 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
       }
       buffer += e;
       tokens.push_back(buffer);
+      opLock = true;
       buffer.clear();
     } else if (e != ' ') {
       buffer += e;
@@ -219,23 +223,21 @@ bool Calculator::isOperator(char &op) {
 std::string Calculator::calculate(std::vector<std::string> &input) {
   this->tokens = input;
   try {
-    this->push_vars();
+    this->pushVars();
     this->next();
     std::string result = std::to_string(this->handleExpression());
     result.erase(result.find_last_not_of('0') + 1, std::string::npos);
     result.erase(result.find_last_not_of('.') + 1, std::string::npos);
     return result;
-  } catch (ErrorCode code) {
-    switch (code) {
-    case DIVBYZERO:
-      return "Division and Modulo by 0 is not allowed!";
-    case NOTANOPERATOR:
-      return "Expected an operator at " + this->current;
-    case NOTANUMBER:
-      return "Expected a number at " + this->current;
-    case BRACKEDERROR:
-      return "Open bracket not closed!";
-    }
+  } catch (NotANumberException e) {
+    return "Expected a number at " + this->current;
+  } catch (ZeroDivisionException e) {
+    return "Division and Modulo by 0 is not allowed!";
+  } catch (NotAnOperatorException e) {
+    return "Expected an operator at " + this->current;
+  } catch (BrackedException e) {
+    return "Open bracket not closed!";
+  } catch (std::exception e) {
     return "Something went wrong...";
   }
   return "Something went wrong...";
@@ -273,7 +275,7 @@ double Calculator::handleExpression() {
         result -= this->handleTerm();
         break;
       default:
-        throw(NOTANOPERATOR);
+        throw(NotAnOperatorException());
         break;
       }
     }
@@ -293,7 +295,7 @@ double Calculator::handleTerm() {
     this->next();
     div = this->handleFactor();
     if (div == 0)
-      throw(DIVBYZERO);
+      throw(ZeroDivisionException());
     result /= div;
     if (isOperator(this->current.front())) {
       this->tokens.insert(tokens.begin(), this->current);
@@ -305,7 +307,7 @@ double Calculator::handleTerm() {
     this->next();
     div = this->handleFactor();
     if (div == 0)
-      throw(DIVBYZERO);
+      throw(ZeroDivisionException());
     result = (double)((int)result % (int)div);
     if (isOperator(this->current.front())) {
       this->tokens.insert(tokens.begin(), this->current);
@@ -325,12 +327,14 @@ double Calculator::handleFactor() {
     this->next();
     result = this->handleExpression();
     if (this->current != ")") {
-      throw(BRACKEDERROR);
+      throw(BrackedException());
     }
     this->next();
   } else {
     if (!std::isdigit(this->current.front())) {
-      throw(NOTANUMBER);
+      if (this->current.length() < 2 || this->current.front() != '-') {
+        throw(NotANumberException());
+      }
     }
     result = std::stod(this->current);
     this->next();
@@ -338,14 +342,21 @@ double Calculator::handleFactor() {
   return result;
 }
 
-std::vector<std::string> Calculator::get_tokens() { return this->tokens; }
+std::vector<std::string> Calculator::getTokens() { return this->tokens; }
 
-std::map<std::string, std::string> Calculator::get_vars() { return this->vars; }
+void Calculator::setTokens(std::vector<std::string> &tokens) {
+  this->tokens = tokens;
+}
+
+std::map<std::string, std::string> Calculator::getVars() { return this->vars; }
 
 int testat_interface(std::string expr) {
   Calculator *calculator = new Calculator();
   std::vector<std::string> input = Calculator::splitString(expr);
-  int result = std::stoi(calculator->calculate(input));
+  calculator->setTokens(input);
+  calculator->pushVars();
+  calculator->next();
+  int result = calculator->handleExpression();
   delete calculator;
   return result;
 }
