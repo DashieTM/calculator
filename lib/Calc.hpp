@@ -55,6 +55,7 @@ public:
 
   static double test_interface(std::string expr);
   static void greeting();
+  static void negativeClean(std::vector<std::string>& vec);
   static bool isOperator(char &op);
   static std::vector<std::string> splitString(std::string &input);
 };

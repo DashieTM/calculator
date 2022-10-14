@@ -10,7 +10,7 @@
 
 void Calculator::greeting() {
   std::cout << "A small calulator, various expressions allowed, operators + - "
-               "/ * %.\n Or enter exit to exit\n";
+               "/ * %.\nOr enter exit to exit\n";
 }
 
 std::string Calculator::handleVars(std::vector<std::string> &input) {
@@ -152,12 +152,16 @@ void Calculator::pushVars() {
     it = this->vars.find(e);
     if (it != this->vars.end()) {
       e = it->second;
-    } else if (e.front() == '-') {
+    } else {
       std::string buffer = e;
       buffer.erase(buffer.begin());
       it = this->vars.find(buffer);
       if (it != this->vars.end()) {
-        e = '-' + it->second;
+        if (it->second.front() == '-') {
+          e = it->second;
+        } else {
+          e = '-' + it->second;
+        }
       }
     }
   }
@@ -196,6 +200,13 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
       buffer.clear();
     }
     if (Calculator::isOperator(e)) {
+      if (opCurrent && e == '-') {
+        opLock = false;
+        digitLock= false;
+        buffer += e;
+        continue;
+      }
+      opCurrent = false;
       if (charLock) {
         charLock = false;
         tokens.push_back(buffer);
@@ -208,6 +219,7 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
     } else if (e != ' ') {
       buffer += e;
       charLock = true;
+      opCurrent = false;
     } else if (charLock) {
       charLock = false;
       tokens.push_back(buffer);
@@ -217,6 +229,7 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
   if (buffer != "") {
     tokens.push_back(buffer);
   }
+  negativeClean(tokens);
   return tokens;
 }
 
@@ -415,3 +428,17 @@ double Calculator::test_interface(std::string expr) {
   return result;
 }
 
+void Calculator::negativeClean(std::vector<std::string> &vec) {
+  bool minLock = false;
+  for (auto &e : vec) {
+    if (e.size() > 1) {
+      while (e.front() == '-') {
+        minLock = !minLock;
+        e.erase(e.begin());
+      }
+      if (minLock) {
+        e.insert(e.begin(), '-');
+      }
+    }
+  }
+}
