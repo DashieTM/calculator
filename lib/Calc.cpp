@@ -360,6 +360,11 @@ double Calculator::handleTerm() {
     this->b_expect_number = true;
     div = this->handleFactor();
     result = exponential(result,(int)div);
+    if (isOperator(this->current.front())) {
+      this->tokens.insert(tokens.begin(), this->current);
+      this->current = std::to_string(result);
+      result = this->handleTerm();
+    }
     break;
   case '*':
     this->next();
@@ -413,7 +418,6 @@ double Calculator::handleFactor() {
   } else if (this->current == "!") {
     this->next();
     result = factorial((int)this->handleFactor());
-    this->next();
     this->b_expect_number = false;
   } else if (isSpecial()) {
     result = this->handleSpecials();
