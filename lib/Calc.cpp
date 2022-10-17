@@ -394,11 +394,17 @@ double Calculator::handleFactor() {
     }
     this->next();
     this->b_expect_number = false;
+  } else if (isSpecial()) {
+    result = this->handleSpecials();
+    this->next();
+    if (this->current != ")") {
+      throw BrackedException();
+    }
+    this->next();
+    this->b_expect_number = false;
   } else {
-    if (!std::isdigit(this->current.front())) {
-      if (this->current.length() < 2 || this->current.front() != '-') {
-        throw(NotANumberException());
-      }
+    if (!this->isNumber()) {
+      throw(NotANumberException());
     }
     result = std::stod(this->current);
     this->next();
@@ -449,6 +455,65 @@ double Calculator::test_interface(std::string expr) {
   double result = calculator->handleExpression();
   delete calculator;
   return result;
+}
+
+double Calculator::handleSpecials() {
+  if (this->current == "cos") {
+    this->next();
+    this->next();
+    if (this->isNumber()) {
+      return std::cos(std::stod(this->current));
+    } else {
+      throw NotANumberException();
+    }
+  } else if (this->current == "sin") {
+    this->next();
+    this->next();
+    if (this->isNumber()) {
+      return std::cos(std::stod(this->current));
+    } else {
+      throw NotANumberException();
+    }
+  } else {
+    this->next();
+    this->next();
+    if (this->isNumber()) {
+      if (!this->isNegative()) {
+        return std::log(std::stod(this->current));
+      } else {
+        throw NegativeLogException();
+      }
+    } else {
+      throw NotANumberException();
+    }
+  }
+}
+
+bool Calculator::isNegative() {
+  if (this->current.front() == '-') {
+    return true;
+  }
+  return false;
+}
+
+bool Calculator::isNumber() {
+  if (!std::isdigit(this->current.front())) {
+    if (this->current.length() < 2 || this->current.front() != '-') {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool Calculator::isSpecial() {
+  if (this->current == "cos") {
+    return true;
+  } else if (this->current == "sin") {
+    return true;
+  } else if (this->current == "log") {
+    return true;
+  }
+  return false;
 }
 
 void Calculator::negativeClean(std::vector<std::string> &vec) {

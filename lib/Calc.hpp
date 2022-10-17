@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cmath>
 
 class Calculator {
 protected:
@@ -29,14 +30,19 @@ public:
   class NotAnOperatorException : public std::exception {};
   class NotANumberException : public std::exception {};
   class BrackedException : public std::exception {};
+  class NegativeLogException : public std::exception {};
   class StreamBadException : public std::exception {};
   
   Calculator();
   void next();
   bool hasNext();
+  bool isNumber();
+  bool isNegative();
+  bool isSpecial();
   double handleExpression();
   double handleTerm();
   double handleFactor();
+  double handleSpecials();
   void readVars();
   void pushVars();
   void interface(bool fancy, std::istream &is = std::cin);
