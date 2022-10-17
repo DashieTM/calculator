@@ -41,10 +41,12 @@ public:
   bool isNumber();
   bool isNegative();
   bool isSpecial();
+  int factorial(int num);
   double handleExpression();
   double handleTerm();
   double handleFactor();
   double handleSpecials();
+  double exponential(double base, int power);
   void readVars();
   void pushVars();
   void interface(bool fancy, std::istream &is = std::cin);

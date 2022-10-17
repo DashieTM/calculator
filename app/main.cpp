@@ -3,12 +3,13 @@
 
 MyWindow::MyWindow()
     : m_button("="), m2_button("clear"), m3_button("delete"), sin_button("sin"),
-      cos_button("cos"), tan_button("tan"), log_button("log"), c1_button("1"),
-      c2_button("2"), c3_button("3"), c4_button("4"), c5_button("5"),
-      c6_button("6"), c7_button("7"), c8_button("8"), c9_button("9"),
-      c0_button("0"), opl_button("+"), omi_button("-"), omu_button("*"),
-      odi_button("/"), omo_button("%"), obo_button("("), obc_button(")"),
-      dot_button("."), menu_button(), box(Gtk::Orientation::VERTICAL),
+      cos_button("cos"), tan_button("tan"), log_button("log"),
+      exp_button("exp"), c1_button("1"), c2_button("2"), c3_button("3"),
+      c4_button("4"), c5_button("5"), c6_button("6"), c7_button("7"),
+      c8_button("8"), c9_button("9"), c0_button("0"), opl_button("+"),
+      omi_button("-"), omu_button("*"), odi_button("/"), omo_button("%"),
+      fac_button("!"), obo_button("("), obc_button(")"), dot_button("."),
+      menu_button(), box(Gtk::Orientation::VERTICAL),
       menuBox(Gtk::Orientation::VERTICAL), varEntry(), menu(), comboBox(),
       resultWindow(), mainRow(), numberRow1(), numberRow2(), numberRow3(),
       numberRow4(), numberBox(Gtk::Orientation::VERTICAL),
@@ -31,7 +32,9 @@ MyWindow::MyWindow()
   tan_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_tan_clicked));
   log_button.signal_clicked().connect(
-      sigc::mem_fun(*this, &MyWindow::on_log_clicked));
+      sigc::mem_fun(*this, &MyWindow::on_tan_clicked));
+  exp_button.signal_clicked().connect(
+      sigc::mem_fun(*this, &MyWindow::on_exp_clicked));
   c1_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_1_clicked));
   c2_button.signal_clicked().connect(
@@ -62,6 +65,8 @@ MyWindow::MyWindow()
       sigc::mem_fun(*this, &MyWindow::on_div_clicked));
   omo_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_mod_clicked));
+  fac_button.signal_clicked().connect(
+      sigc::mem_fun(*this, &MyWindow::on_fac_clicked));
   obo_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_bropen_clicked));
   obc_button.signal_clicked().connect(
@@ -126,6 +131,7 @@ MyWindow::MyWindow()
   specialRow.append(cos_button);
   specialRow.append(tan_button);
   specialRow.append(log_button);
+  specialRow.append(exp_button);
 
   numberRow1.append(c1_button);
   numberRow1.append(c2_button);
@@ -157,6 +163,7 @@ MyWindow::MyWindow()
   operatorRow1.set_spacing(5);
 
   operatorRow2.append(omo_button);
+  operatorRow2.append(fac_button);
   operatorRow2.append(obo_button);
   operatorRow2.append(obc_button);
   operatorRow2.set_spacing(5);
@@ -311,6 +318,11 @@ void MyWindow::on_log_clicked() {
   this->result += "log(";
   this->entryBox.set_text(this->result);
 }
+void MyWindow::on_exp_clicked() {
+  this->result = this->entryBox.get_text();
+  this->result += "^";
+  this->entryBox.set_text(this->result);
+}
 void MyWindow::on_1_clicked() {
   this->result = this->entryBox.get_text();
   this->result += "1";
@@ -384,6 +396,11 @@ void MyWindow::on_mult_clicked() {
 void MyWindow::on_mod_clicked() {
   this->result = this->entryBox.get_text();
   this->result += "%";
+  this->entryBox.set_text(this->result);
+}
+void MyWindow::on_fac_clicked() {
+  this->result = this->entryBox.get_text();
+  this->result += "!";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_bropen_clicked() {

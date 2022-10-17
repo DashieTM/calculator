@@ -20,6 +20,7 @@ public:
   void on_cos_clicked();
   void on_tan_clicked();
   void on_log_clicked();
+  void on_exp_clicked();
   void on_1_clicked();
   void on_2_clicked();
   void on_3_clicked();
@@ -35,6 +36,7 @@ public:
   void on_div_clicked();
   void on_mult_clicked();
   void on_mod_clicked();
+  void on_fac_clicked();
   void on_bropen_clicked();
   void on_brclosed_clicked();
   void on_dot_clicked();
@@ -49,6 +51,7 @@ public:
   Gtk::Button cos_button;
   Gtk::Button log_button;
   Gtk::Button tan_button;
+  Gtk::Button exp_button;
   Gtk::Button c1_button;
   Gtk::Button c2_button;
   Gtk::Button c3_button;
@@ -64,6 +67,7 @@ public:
   Gtk::Button odi_button;
   Gtk::Button omu_button;
   Gtk::Button omo_button;
+  Gtk::Button fac_button;
   Gtk::Button obo_button;
   Gtk::Button obc_button;
   Gtk::Button dot_button;

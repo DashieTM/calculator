@@ -264,6 +264,8 @@ bool Calculator::isOperator(char &op) {
     return true;
   case '*':
     return true;
+  case '^':
+    return true;
   case '(':
     return true;
   case ')':
@@ -353,6 +355,12 @@ double Calculator::handleTerm() {
   double result = this->handleFactor();
   double div = 0;
   switch (this->current.front()) {
+  case '^':
+    this->next();
+    this->b_expect_number = true;
+    div = this->handleFactor();
+    result = exponential(result,(int)div);
+    break;
   case '*':
     this->next();
     this->b_expect_number = true;
@@ -399,6 +407,13 @@ double Calculator::handleFactor() {
     result = this->handleExpression();
     if (this->current != ")") {
       throw(BrackedException());
+    }
+    this->next();
+    this->b_expect_number = false;
+  } else if (this->current == "!") {
+    this->next();
+    if (isNumber() && !isNegative()) {
+      result = factorial(std::stoi(this->current));
     }
     this->next();
     this->b_expect_number = false;
@@ -553,6 +568,20 @@ bool Calculator::isSpecial() {
     return true;
   }
   return false;
+}
+
+int Calculator::factorial(int num) {
+  if (num > 1) {
+    return num * factorial(num - 1);
+  }
+  return 1;
+}
+
+double Calculator::exponential(double base, int power) {
+  if (power > 0) {
+    return base * exponential(base, power - 1);
+  }
+  return 1;
 }
 
 void Calculator::negativeClean(std::vector<std::string> &vec) {
