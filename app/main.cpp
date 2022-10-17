@@ -173,7 +173,7 @@ MyWindow::MyWindow()
 MyWindow::~MyWindow() { delete this->calculator; }
 
 int main(int argc, char *argv[]) {
-  if (argc == 2) {
+  if (argc > 1) {
     std::string test = argv[1];
     if (test == "--gui") {
       auto app = Gtk::Application::create("org.shitgaem.Calculator");
@@ -185,10 +185,20 @@ int main(int argc, char *argv[]) {
       Calculator::greeting();
       calculator->interface(true);
       delete (calculator);
-    } else {
-      std::cout << "To run the program in gui launch it with the --gui flag\n"
-                   "To run the program with fancy output launch it with the --fancy flag\n"
-                   "Otherwise leave it empty for command line\n";
+    } else if (test == "--help") {
+      std::cout << "--gui GUI version\n"
+                   "--fancy fancy oldschool calculator output\n"
+                   "None, regular terminal calculator\n";
+    } else { 
+      try {
+      std::string expression;
+      for (int i = 1; i < argc ; i++) {
+        expression += argv[i];
+      }
+      std::cout << Calculator::test_interface(expression) << "\n";
+      } catch (std::exception e) {
+        return -1;
+      }
     }
   } else {
     Calculator *calculator = new Calculator();

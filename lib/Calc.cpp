@@ -44,6 +44,10 @@ void Calculator::interface(bool fancy, std::istream &is) {
       std::cout << getResults();
     } else if (line == "vars") {
       std::cout << getVarList();
+    } else if (line == "help") {
+      std::cout << "exit: leaves the calculator\n"
+                   "vars: shows all set variables\n"
+                   "list: lists all previous results\n";
     } else {
       this->expressions.push_back(line);
       std::vector<std::string> input = Calculator::splitString(line);
