@@ -417,7 +417,8 @@ double Calculator::test_interface(std::string expr) {
 
 void Calculator::testatInterface(std::istream &is, std::ostream &os) {
   std::string line = "";
-  if(is.eof()) return;
+  if (is.eof())
+    return;
   if (std::getline(is, line) && !is.bad()) {
     if (line != "") {
       this->expressions.push_back(line);
@@ -429,19 +430,30 @@ void Calculator::testatInterface(std::istream &is, std::ostream &os) {
         printErr(os);
       }
     }
-  } 
-  testatInterface(is,os);
+  }
+  testatInterface(is, os);
 }
 
 auto calc(int first, int second, char op) -> int {
   std::string expr = std::to_string(first) + op + std::to_string(second);
-  return (int)Calculator::test_interface(expr);
+  return Calculator::test_interface(expr);
 }
 
 auto calc(std::istream &stream) -> int {
-  if(!stream.eof() && !stream.bad()) {
-    std::string expr(std::istreambuf_iterator<char>(stream), {});
-    return (int)Calculator::test_interface(expr);
+  if (!stream.fail()) {
+    int opleft;
+    int opright;
+    char op;
+    if (stream >> opleft) {
+      if (stream >> op) {
+        if (stream >> opright) {
+          return calc(opleft, opright, op);
+        }
+        throw Calculator::NotAnOperatorException();
+      }
+      throw Calculator::NotANumberException();
+    }
+    throw Calculator::NotANumberException();
   } else {
     throw Calculator::StreamBadException();
   }
