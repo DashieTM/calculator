@@ -462,7 +462,7 @@ double Calculator::handleSpecials() {
     this->next();
     this->next();
     if (this->isNumber()) {
-      return std::cos(std::stod(this->current));
+      return std::cos(std::stod(this->current)* (std::numbers::pi / 180));
     } else {
       throw NotANumberException();
     }
@@ -470,7 +470,7 @@ double Calculator::handleSpecials() {
     this->next();
     this->next();
     if (this->isNumber()) {
-      return std::cos(std::stod(this->current));
+      return std::sin(std::stod(this->current) * (std::numbers::pi / 180));
     } else {
       throw NotANumberException();
     }

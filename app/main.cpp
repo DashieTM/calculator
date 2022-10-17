@@ -2,15 +2,16 @@
 #include "Calc.hpp"
 
 MyWindow::MyWindow()
-    : m_button("="), m2_button("clear"), m3_button("delete"), c1_button("1"),
-      c2_button("2"), c3_button("3"), c4_button("4"), c5_button("5"),
-      c6_button("6"), c7_button("7"), c8_button("8"), c9_button("9"),
-      c0_button("0"), opl_button("+"), omi_button("-"), omu_button("*"),
-      odi_button("/"), omo_button("%"), obo_button("("), obc_button(")"),
-      dot_button("."), menu_button(), box(Gtk::Orientation::VERTICAL),
-      menuBox(Gtk::Orientation::VERTICAL), varEntry(), menu(), comboBox(), resultWindow(),
-      mainRow(), numberRow1(), numberRow2(), numberRow3(), numberRow4(),
-      numberBox(Gtk::Orientation::VERTICAL),
+    : m_button("="), m2_button("clear"), m3_button("delete"), sin_button("sin"),
+      cos_button("cos"), log_button("log"), c1_button("1"), c2_button("2"),
+      c3_button("3"), c4_button("4"), c5_button("5"), c6_button("6"),
+      c7_button("7"), c8_button("8"), c9_button("9"), c0_button("0"),
+      opl_button("+"), omi_button("-"), omu_button("*"), odi_button("/"),
+      omo_button("%"), obo_button("("), obc_button(")"), dot_button("."),
+      menu_button(), box(Gtk::Orientation::VERTICAL),
+      menuBox(Gtk::Orientation::VERTICAL), varEntry(), menu(), comboBox(),
+      resultWindow(), mainRow(), numberRow1(), numberRow2(), numberRow3(),
+      numberRow4(), numberBox(Gtk::Orientation::VERTICAL),
       operatorRow1(Gtk::Orientation::VERTICAL),
       operatorRow2(Gtk::Orientation::VERTICAL), operatorBox(), entryBox() {
   calculator = new Calculator();
@@ -23,6 +24,12 @@ MyWindow::MyWindow()
       sigc::mem_fun(*this, &MyWindow::on_clear_clicked));
   m3_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_delete_clicked));
+  sin_button.signal_clicked().connect(
+      sigc::mem_fun(*this, &MyWindow::on_sin_clicked));
+  cos_button.signal_clicked().connect(
+      sigc::mem_fun(*this, &MyWindow::on_cos_clicked));
+  log_button.signal_clicked().connect(
+      sigc::mem_fun(*this, &MyWindow::on_log_clicked));
   c1_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_1_clicked));
   c2_button.signal_clicked().connect(
@@ -76,21 +83,23 @@ MyWindow::MyWindow()
   box.append(mainRow);
   mainRow.set_margin_start(10);
   mainRow.set_margin_top(10);
+  box.append(specialRow);
+  specialRow.set_margin_start(10);
+  specialRow.set_margin_top(5);
   box.append(comboBox);
-  
+
   comboBox.append(numberBox);
   comboBox.append(operatorBox);
   box.append(resultWindow);
-  resultWindow.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);
+  resultWindow.set_policy(Gtk::PolicyType::AUTOMATIC,
+                          Gtk::PolicyType::AUTOMATIC);
   resultWindow.set_expand();
   resultWindow.set_margin(5);
   resultView.set_editable(false);
- 
 
   resultWindow.set_child(resultView);
   resultBuffer = Gtk::TextBuffer::create();
   resultView.set_buffer(resultBuffer);
-
 
   numberBox.append(numberRow1);
   numberBox.append(numberRow2);
@@ -109,6 +118,11 @@ MyWindow::MyWindow()
   mainRow.append(m_button);
   mainRow.append(m2_button);
   mainRow.append(m3_button);
+
+  specialRow.set_spacing(5);
+  specialRow.append(sin_button);
+  specialRow.append(cos_button);
+  specialRow.append(log_button);
 
   numberRow1.append(c1_button);
   numberRow1.append(c2_button);
@@ -161,13 +175,13 @@ MyWindow::MyWindow()
   // main structure:      comboBox:           Numbers:    Operators:
   // EntryBox          Numbers | Operators    Row1        Row1
   // mainRow                                  Row2        Row2
-  // combobox                                 Row3        Row3
+  // specialRow                               Row3        Row3
+  // combobox
   // resultList
 
   // PopupList
   // EntryBox
   // varList
-
 }
 
 MyWindow::~MyWindow() { delete this->calculator; }
@@ -189,13 +203,13 @@ int main(int argc, char *argv[]) {
       std::cout << "--gui GUI version\n"
                    "--fancy fancy oldschool calculator output\n"
                    "None, regular terminal calculator\n";
-    } else { 
+    } else {
       try {
-      std::string expression;
-      for (int i = 1; i < argc ; i++) {
-        expression += argv[i];
-      }
-      std::cout << Calculator::test_interface(expression) << "\n";
+        std::string expression;
+        for (int i = 1; i < argc; i++) {
+          expression += argv[i];
+        }
+        std::cout << Calculator::test_interface(expression) << "\n";
       } catch (std::exception e) {
         return -1;
       }
@@ -209,8 +223,9 @@ int main(int argc, char *argv[]) {
   }
 }
 
-// read the text, check if it is valid, aka not empty and push it to the calculator
-// then display the result and flush the string buffer used to enter an expression
+// read the text, check if it is valid, aka not empty and push it to the
+// calculator then display the result and flush the string buffer used to enter
+// an expression
 void MyWindow::on_button_clicked() {
   this->result = this->entryBox.get_text();
   if (this->result != "") {
@@ -254,8 +269,9 @@ void MyWindow::on_delete_clicked() {
   this->entryBox.set_text(this->result);
 }
 
-// read the text, check if it is valid, aka not empty and push it to the calculator
-// then display the result and flush the string buffer used to enter an expression
+// read the text, check if it is valid, aka not empty and push it to the
+// calculator then display the result and flush the string buffer used to enter
+// an expression
 void MyWindow::on_enter_pressed() {
   this->result = this->entryBox.get_text();
   if (this->result != "") {
@@ -272,6 +288,21 @@ void MyWindow::on_enter_pressed() {
   this->setResults(this->calculator->getResults());
 }
 
+void MyWindow::on_sin_clicked() {
+  this->result = this->entryBox.get_text();
+  this->result += "sin(";
+  this->entryBox.set_text(this->result);
+}
+void MyWindow::on_cos_clicked() {
+  this->result = this->entryBox.get_text();
+  this->result += "cos(";
+  this->entryBox.set_text(this->result);
+}
+void MyWindow::on_log_clicked() {
+  this->result = this->entryBox.get_text();
+  this->result += "log(";
+  this->entryBox.set_text(this->result);
+}
 void MyWindow::on_1_clicked() {
   this->result = this->entryBox.get_text();
   this->result += "1";
@@ -397,4 +428,3 @@ void MyWindow::setResults(std::string str) {
   this->resultBuffer->set_text(str);
   this->resultView.set_buffer(this->resultBuffer);
 }
-

@@ -16,6 +16,9 @@ public:
   void on_button_clicked();
   void on_clear_clicked();
   void on_delete_clicked();
+  void on_sin_clicked();
+  void on_cos_clicked();
+  void on_log_clicked();
   void on_1_clicked();
   void on_2_clicked();
   void on_3_clicked();
@@ -41,6 +44,9 @@ public:
   Gtk::Button m_button;
   Gtk::Button m2_button;
   Gtk::Button m3_button;
+  Gtk::Button sin_button;
+  Gtk::Button cos_button;
+  Gtk::Button log_button;
   Gtk::Button c1_button;
   Gtk::Button c2_button;
   Gtk::Button c3_button;
@@ -70,6 +76,7 @@ public:
   Gtk::Box box;
   Gtk::Box comboBox;
   Gtk::Box mainRow;
+  Gtk::Box specialRow;
   Gtk::Box numberRow1;
   Gtk::Box numberRow2;
   Gtk::Box numberRow3;
