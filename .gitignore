@@ -6,4 +6,7 @@ CMakeFiles/*
 *.zst
 src/*
 pkg/*
+vars.txt
+Makefile 
+cmake_install.cmake 
 
