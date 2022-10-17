@@ -412,9 +412,7 @@ double Calculator::handleFactor() {
     this->b_expect_number = false;
   } else if (this->current == "!") {
     this->next();
-    if (isNumber() && !isNegative()) {
-      result = factorial(std::stoi(this->current));
-    }
+    result = factorial((int)this->handleFactor());
     this->next();
     this->b_expect_number = false;
   } else if (isSpecial()) {
