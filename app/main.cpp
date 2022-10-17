@@ -3,12 +3,12 @@
 
 MyWindow::MyWindow()
     : m_button("="), m2_button("clear"), m3_button("delete"), sin_button("sin"),
-      cos_button("cos"), log_button("log"), c1_button("1"), c2_button("2"),
-      c3_button("3"), c4_button("4"), c5_button("5"), c6_button("6"),
-      c7_button("7"), c8_button("8"), c9_button("9"), c0_button("0"),
-      opl_button("+"), omi_button("-"), omu_button("*"), odi_button("/"),
-      omo_button("%"), obo_button("("), obc_button(")"), dot_button("."),
-      menu_button(), box(Gtk::Orientation::VERTICAL),
+      cos_button("cos"), tan_button("tan"), log_button("log"), c1_button("1"),
+      c2_button("2"), c3_button("3"), c4_button("4"), c5_button("5"),
+      c6_button("6"), c7_button("7"), c8_button("8"), c9_button("9"),
+      c0_button("0"), opl_button("+"), omi_button("-"), omu_button("*"),
+      odi_button("/"), omo_button("%"), obo_button("("), obc_button(")"),
+      dot_button("."), menu_button(), box(Gtk::Orientation::VERTICAL),
       menuBox(Gtk::Orientation::VERTICAL), varEntry(), menu(), comboBox(),
       resultWindow(), mainRow(), numberRow1(), numberRow2(), numberRow3(),
       numberRow4(), numberBox(Gtk::Orientation::VERTICAL),
@@ -28,6 +28,8 @@ MyWindow::MyWindow()
       sigc::mem_fun(*this, &MyWindow::on_sin_clicked));
   cos_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_cos_clicked));
+  tan_button.signal_clicked().connect(
+      sigc::mem_fun(*this, &MyWindow::on_tan_clicked));
   log_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_log_clicked));
   c1_button.signal_clicked().connect(
@@ -122,6 +124,7 @@ MyWindow::MyWindow()
   specialRow.set_spacing(5);
   specialRow.append(sin_button);
   specialRow.append(cos_button);
+  specialRow.append(tan_button);
   specialRow.append(log_button);
 
   numberRow1.append(c1_button);
@@ -296,6 +299,11 @@ void MyWindow::on_sin_clicked() {
 void MyWindow::on_cos_clicked() {
   this->result = this->entryBox.get_text();
   this->result += "cos(";
+  this->entryBox.set_text(this->result);
+}
+void MyWindow::on_tan_clicked() {
+  this->result = this->entryBox.get_text();
+  this->result += "tan(";
   this->entryBox.set_text(this->result);
 }
 void MyWindow::on_log_clicked() {

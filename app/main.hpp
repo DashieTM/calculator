@@ -18,6 +18,7 @@ public:
   void on_delete_clicked();
   void on_sin_clicked();
   void on_cos_clicked();
+  void on_tan_clicked();
   void on_log_clicked();
   void on_1_clicked();
   void on_2_clicked();
@@ -47,6 +48,7 @@ public:
   Gtk::Button sin_button;
   Gtk::Button cos_button;
   Gtk::Button log_button;
+  Gtk::Button tan_button;
   Gtk::Button c1_button;
   Gtk::Button c2_button;
   Gtk::Button c3_button;

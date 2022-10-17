@@ -31,6 +31,8 @@ public:
   class NotANumberException : public std::exception {};
   class BrackedException : public std::exception {};
   class NegativeLogException : public std::exception {};
+  class TangentOutOfScopeException : public std::exception {};
+  class NoBrackedAfterSpecialException : public std::exception {};
   class StreamBadException : public std::exception {};
   
   Calculator();

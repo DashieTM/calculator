@@ -1,6 +1,8 @@
 #include "Calc.hpp"
 #include "Sevensegment.hpp"
+#include <cmath>
 #include <exception>
+#include <numbers>
 /*
  * standard grammar for calculator
  * exp := term | exp + term | exp - term
@@ -229,7 +231,7 @@ std::vector<std::string> Calculator::splitString(std::string &input) {
       tokens.push_back(buffer);
       opLock = true;
       buffer.clear();
-    } else if (e != ' ') {
+    } else if (e != ' ' && e != '_') {
       // handle all chars
       buffer += e;
       charLock = true;
@@ -291,6 +293,12 @@ std::string Calculator::calculate(std::vector<std::string> &input) {
     return "Expected an operator at " + this->current;
   } catch (BrackedException e) {
     return "Open bracket not closed!";
+  } catch (TangentOutOfScopeException e) {
+    return "Tangent at 90/180 are disallowed! ";
+  } catch (NoBrackedAfterSpecialException e) {
+    return "Expected open Bracket at " + this->current;
+  } catch (StreamBadException e) {
+    return "Stream failed!";
   } catch (std::exception e) {
     return "Something went wrong...";
   }
@@ -460,26 +468,55 @@ double Calculator::test_interface(std::string expr) {
 double Calculator::handleSpecials() {
   if (this->current == "cos") {
     this->next();
+    if (this->current != "(")
+      throw NoBrackedAfterSpecialException();
     this->next();
     if (this->isNumber()) {
-      return std::cos(std::stod(this->current)* (std::numbers::pi / 180));
+      return std::cos(std::stod(this->current) * (std::numbers::pi / 180));
     } else {
       throw NotANumberException();
     }
   } else if (this->current == "sin") {
     this->next();
+    if (this->current != "(")
+      throw NoBrackedAfterSpecialException();
     this->next();
     if (this->isNumber()) {
       return std::sin(std::stod(this->current) * (std::numbers::pi / 180));
     } else {
       throw NotANumberException();
     }
-  } else {
+  } else if (this->current == "tan") {
     this->next();
+    if (this->current != "(")
+      throw NoBrackedAfterSpecialException();
     this->next();
     if (this->isNumber()) {
+      int tannum = std::stod(this->current);
+      if (tannum / 90 % 2 == 1 || tannum / 90 % 2 == -1) {
+        throw TangentOutOfScopeException();
+      }
+      return std::tan(tannum * std::numbers::pi / 180);
+    } else {
+      throw NotANumberException();
+    }
+  } else {
+    int logbase = std::numbers::e;
+    this->next();
+    if (isNumber() && !isNegative()) {
+      logbase = std::stoi(this->current);
+      this->next();
+      if (this->current != "(")
+        throw NoBrackedAfterSpecialException();
+      this->next();
+    } else {
+      if (this->current != "(")
+        throw NoBrackedAfterSpecialException();
+      this->next();
+    }
+    if (this->isNumber()) {
       if (!this->isNegative()) {
-        return std::log(std::stod(this->current));
+        return std::log(std::stod(this->current)) / std::log(logbase);
       } else {
         throw NegativeLogException();
       }
@@ -509,6 +546,8 @@ bool Calculator::isSpecial() {
   if (this->current == "cos") {
     return true;
   } else if (this->current == "sin") {
+    return true;
+  } else if (this->current == "tan") {
     return true;
   } else if (this->current == "log") {
     return true;
