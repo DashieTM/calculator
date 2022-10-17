@@ -290,13 +290,17 @@ std::string Calculator::calculate(std::vector<std::string> &input) {
   } catch (NotANumberException e) {
     return "Expected a number at " + this->current;
   } catch (ZeroDivisionException e) {
-    return "Division and Modulo by 0 is not allowed!";
+    return "Division/Modulo by 0 is disallowed!";
   } catch (NotAnOperatorException e) {
     return "Expected an operator at " + this->current;
   } catch (BrackedException e) {
     return "Open bracket not closed!";
   } catch (TangentOutOfScopeException e) {
     return "Tangent at 90/180 are disallowed! ";
+  } catch (NegativeLogException e) {
+    return "Log of negative number disallowed! ";
+  } catch (NegativeFactorialException e) {
+    return "Fac of negative number disallowed! ";
   } catch (NoBrackedAfterSpecialException e) {
     return "Expected open Bracket at " + this->current;
   } catch (StreamBadException e) {
@@ -355,12 +359,22 @@ double Calculator::handleTerm() {
   double result = this->handleFactor();
   double div = 0;
   switch (this->current.front()) {
+  case '!':
+    this->next();
+    this->b_expect_number = false;
+    result = factorial(result);
+    if (isOperator(this->current.front()) && this->current.front() != ')') {
+      this->tokens.insert(tokens.begin(), this->current);
+      this->current = std::to_string(result);
+      result = this->handleTerm();
+    }
+    break;
   case '^':
     this->next();
     this->b_expect_number = true;
     div = this->handleFactor();
-    result = exponential(result,(int)div);
-    if (isOperator(this->current.front())) {
+    result = exponential(result, (int)div);
+    if (isOperator(this->current.front()) && this->current.front() != ')') {
       this->tokens.insert(tokens.begin(), this->current);
       this->current = std::to_string(result);
       result = this->handleTerm();
@@ -379,7 +393,7 @@ double Calculator::handleTerm() {
       throw(ZeroDivisionException());
     result /= div;
     // special hack for divisions and modulo, as they aren't communitative!
-    if (isOperator(this->current.front())) {
+    if (isOperator(this->current.front()) && this->current.front() != ')') {
       this->tokens.insert(tokens.begin(), this->current);
       this->current = std::to_string(result);
       result = this->handleTerm();
@@ -393,7 +407,7 @@ double Calculator::handleTerm() {
       throw(ZeroDivisionException());
     result = (double)((int)result % (int)div);
     // special hack for divisions and modulo, as they aren't communitative!
-    if (isOperator(this->current.front())) {
+    if (isOperator(this->current.front()) && this->current.front() != ')') {
       this->tokens.insert(tokens.begin(), this->current);
       this->current = std::to_string(result);
       result = this->handleTerm();
@@ -415,15 +429,19 @@ double Calculator::handleFactor() {
     }
     this->next();
     this->b_expect_number = false;
-  } else if (this->current == "!") {
-    this->next();
-    result = factorial((int)this->handleFactor());
-    this->b_expect_number = false;
   } else if (isSpecial()) {
     result = this->handleSpecials();
     this->next();
     if (this->current != ")") {
       throw BrackedException();
+    }
+    this->next();
+    this->b_expect_number = false;
+  } else if (this->current == "-(") {
+    this->next();
+    result = negate(this->handleExpression());
+    if (this->current != ")") {
+      throw(BrackedException());
     }
     this->next();
     this->b_expect_number = false;
@@ -483,6 +501,10 @@ double Calculator::test_interface(std::string expr) {
 }
 
 double Calculator::handleSpecials() {
+  if (this->current.front() == '-') {
+    this->current.erase(this->current.begin());
+    return negate(handleSpecials());
+  }
   if (this->current == "cos") {
     this->next();
     if (this->current != "(")
@@ -560,6 +582,13 @@ bool Calculator::isNumber() {
 }
 
 bool Calculator::isSpecial() {
+  if (this->current.front() == '-') {
+    bool b_is_special = false;
+    this->current.erase(this->current.begin());
+    b_is_special = isSpecial();
+    this->current.insert(this->current.begin(), '-');
+    return b_is_special;
+  }
   if (this->current == "cos") {
     return true;
   } else if (this->current == "sin") {
@@ -576,14 +605,29 @@ int Calculator::factorial(int num) {
   if (num > 1) {
     return num * factorial(num - 1);
   }
+  if (num < 0) {
+    throw NegativeFactorialException();
+  }
   return 1;
 }
 
 double Calculator::exponential(double base, int power) {
   if (power > 0) {
     return base * exponential(base, power - 1);
+  } else if (power < 0) {
+    return base * exponential(base, power + 1);
   }
   return 1;
+}
+
+double Calculator::negate(double num) {
+  if (num > 0) {
+    return -num;
+  }
+  if (num < 0) {
+    return num - (2 * num);
+  }
+  return 0;
 }
 
 void Calculator::negativeClean(std::vector<std::string> &vec) {
@@ -600,6 +644,7 @@ void Calculator::negativeClean(std::vector<std::string> &vec) {
       if (minLock) {
         e.insert(e.begin(), '-');
       }
+      minLock = false;
     }
   }
 }

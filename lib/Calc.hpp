@@ -31,6 +31,7 @@ public:
   class NotANumberException : public std::exception {};
   class BrackedException : public std::exception {};
   class NegativeLogException : public std::exception {};
+  class NegativeFactorialException : public std::exception {};
   class TangentOutOfScopeException : public std::exception {};
   class NoBrackedAfterSpecialException : public std::exception {};
   class StreamBadException : public std::exception {};
@@ -65,6 +66,7 @@ public:
   std::map<std::string, std::string> getVars();
 
   static double test_interface(std::string expr);
+  static double negate(double num);
   static void greeting();
   static void negativeClean(std::vector<std::string>& vec);
   static bool isOperator(char &op);
