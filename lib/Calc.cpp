@@ -6,8 +6,9 @@
 /*
  * standard grammar for calculator
  * exp := term | exp + term | exp - term
- * term := factor | factor * term | factor / term | factor % term
- * factor := number | ( exp )
+ * term := factor | factor ^ factor |factor * term | factor / term | factor %
+ * factor := ! factor | ( exp ) | -( exp ) | special | number
+ * special := cos ( exp ) | sin ( exp ) | log ( exp ) | log factor ( exp )
  */
 
 void Calculator::greeting() {
