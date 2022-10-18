@@ -423,6 +423,9 @@ void Calculator::testatInterface(std::istream &is, std::ostream &os) {
     if (line != "") {
       this->expressions.push_back(line);
       std::vector<std::string> input = Calculator::splitString(line);
+      if (input.size() != 3) {
+        printErr(os);
+      }
       std::string result = this->calculate(input);
       if (result.front() == '-' || std::isdigit(result.front())) {
         printDigit(result, os);
