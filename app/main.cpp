@@ -32,7 +32,7 @@ MyWindow::MyWindow()
   tan_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_tan_clicked));
   log_button.signal_clicked().connect(
-      sigc::mem_fun(*this, &MyWindow::on_tan_clicked));
+      sigc::mem_fun(*this, &MyWindow::on_log_clicked));
   exp_button.signal_clicked().connect(
       sigc::mem_fun(*this, &MyWindow::on_exp_clicked));
   c1_button.signal_clicked().connect(
